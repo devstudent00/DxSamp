@@ -2,6 +2,7 @@
 #include "global.h"
 #include "input.h"
 #include <vector>
+#include "Player.h"
 
 namespace
 {
@@ -12,6 +13,8 @@ namespace
 	int SKY_COLOR[3] = { 178, 237, 232 };
 	int GREEN_ZONE = 50;
 	int GREEN_COLOR = GetColor(50, 205, 50);
+
+	Player* player = nullptr;
 }
 
 
@@ -38,16 +41,19 @@ void DxInit()
 void Initialize()
 {
 
-
+	//const Vector2D& pos, const Vector2D& vel, const Vector2D& dire, float radius, float omega, float angles, unsigned int color, SHAPE shape)
+	//const Vector2D& dire, float radius, float omega, float angles, unsigned int color, SHAPE shape)
+	player = new Player({ 600,600 }, { 0,0 }, {0, -1}, 60.0f, 1.0f, 0.0f, GetColor(255, 0, 0), SHAPE::CIRLCE);
+	
 }
 void Update()
 {
-
+	player->Update();
 }
 
 void Draw()
 {
-
+	player->Draw();
 }
 
 void DrawStage() {
