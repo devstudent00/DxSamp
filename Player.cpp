@@ -3,6 +3,7 @@
 #include <DxLib.h>
 #include <cmath>
 #include "global.h"
+#include "Math2D.h"
 
 namespace {
 	const float PI = 3.141592;

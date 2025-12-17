@@ -1,6 +1,7 @@
 #include "BaseChara.h"
 #include <DxLib.h>
 #include "global.h"
+#include "Math2D.h"
 
 BaseChara::BaseChara()
 	:pos_(0.0f, 0.0f),

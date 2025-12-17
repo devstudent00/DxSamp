@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2D.h"
+#include "Math2D.h"
 
 //形状
 //0:円 1:正方形 2:長方形　3:三角形

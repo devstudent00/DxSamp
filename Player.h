@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseChara.h"
-#include "Vector2D.h"
+#include "Math2D.h"
 
 class Player : public BaseChara {
 private:
