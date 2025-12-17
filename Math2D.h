@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include "global.h"
 
 /// <summary>
 /// 2Dベクトル構造体（クラスではなく、構造体にしたもの）
@@ -40,6 +41,10 @@ struct Mat2 {
 namespace Math2D {
 	const float PI = 3.141592f;
 	const float PI2 = PI * 2.0f;
+
+	inline Vector2D WorldToScreen(const Vector2D& worldPos) {
+		return Vector2D(worldPos.x, WIN_HEIGHT - worldPos.y);
+	}
 
 	// 2つのベクトルを加算する（a + b）
 	inline Vector2D Add(const Vector2D& a, const Vector2D& b)

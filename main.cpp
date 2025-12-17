@@ -3,6 +3,7 @@
 #include "input.h"
 #include <vector>
 #include "Player.h"
+#include "Stage.h"
 
 namespace
 {
@@ -15,6 +16,7 @@ namespace
 	int GREEN_COLOR = GetColor(50, 205, 50);
 
 	Player* player = nullptr;
+	Stage* stage = nullptr;
 }
 
 
@@ -40,20 +42,20 @@ void DxInit()
 
 void Initialize()
 {
-
+	stage = new Stage();
+	stage->Initialize();
 	//const Vector2D& pos, const Vector2D& vel, const Vector2D& dire, float radius, float omega, float angles, unsigned int color, SHAPE shape)
 	//const Vector2D& dire, float radius, float omega, float angles, unsigned int color, SHAPE shape)
-	player = new Player({ 600,600 }, { 0,0 }, {0, -1}, 60.0f, 1.0f, 0.0f, GetColor(255, 0, 0), SHAPE::CIRLCE);
 	
 }
 void Update()
 {
-	player->Update();
+	stage->Update();
 }
 
 void Draw()
 {
-	player->Draw();
+	stage->Draw();
 }
 
 void DrawStage() {
