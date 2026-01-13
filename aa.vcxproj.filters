@@ -1,48 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Library">
+      <UniqueIdentifier>{a3357819-942f-44b3-b872-7caba64bbe1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="Other">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    <Filter Include="Chara">
+      <UniqueIdentifier>{b7aca27f-7f14-49f7-8843-adf341120713}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaseChara.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="theMain.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Base.cpp">
+      <Filter>Chara</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Chara</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Chara</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Stage.cpp">
+      <Filter>Library</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Chara</Filter>
+    </ClCompile>
+    <ClCompile Include="NewEnemy.cpp">
+      <Filter>Chara</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseChara.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Base.h">
+      <Filter>Chara</Filter>
     </ClInclude>
-    <ClInclude Include="global.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Bullet.h">
+      <Filter>Chara</Filter>
+    </ClInclude>
+    <ClInclude Include="globals.h">
+      <Filter>Library</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
+      <Filter>Library</Filter>
     </ClInclude>
     <ClInclude Include="Math2D.h">
-      <Filter>Header Files</Filter>
+      <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Chara</Filter>
+    </ClInclude>
+    <ClInclude Include="NewEnemy.h">
+      <Filter>Chara</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Chara</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>Library</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,21 +1,14 @@
 #include "DxLib.h"
-#include "global.h"
+#include "globals.h"
 #include "input.h"
-#include <vector>
-#include "Player.h"
 #include "Stage.h"
 
 namespace
 {
-	const int BGCOLOR[3] = { 255, 250, 205 }; // 背景色{ 255, 250, 205 }; // 背景色
+	const int BGCOLOR[3] = {0, 0, 51}; // 背景色{ 255, 250, 205 }; // 背景色
 	int crrTime;
 	int prevTime;
 
-	int SKY_COLOR[3] = { 178, 237, 232 };
-	int GREEN_ZONE = 50;
-	int GREEN_COLOR = GetColor(50, 205, 50);
-
-	Player* player = nullptr;
 	Stage* stage = nullptr;
 }
 
@@ -29,7 +22,7 @@ void DxInit()
 	SetMainWindowText("TITLE");
 	SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
 	SetWindowSizeExtendRate(1.0);
-	SetBackgroundColor(BGCOLOR[0], BGCOLOR[1], BGCOLOR[2]);
+	SetBackgroundColor(BGCOLOR[0],BGCOLOR[1],BGCOLOR[2]);
 
 	// ＤＸライブラリ初期化処理
 	if (DxLib_Init() == -1)
@@ -42,30 +35,27 @@ void DxInit()
 
 void Initialize()
 {
+	// 独自の初期化処理をここに記述
 	stage = new Stage();
 	stage->Initialize();
-	//const Vector2D& pos, const Vector2D& vel, const Vector2D& dire, float radius, float omega, float angles, unsigned int color, SHAPE shape)
-	//const Vector2D& dire, float radius, float omega, float angles, unsigned int color, SHAPE shape)
-	
 }
+
 void Update()
 {
+	
+	// 独自の更新処理をここに記述
 	stage->Update();
 }
-
 void Draw()
 {
+	// 独自の描画処理をここに記述
 	stage->Draw();
 }
-
-void DrawStage() {
-	SetBackgroundColor(SKY_COLOR[0], SKY_COLOR[1], SKY_COLOR[2]);
+void Release()
+{
+	// 独自の終了処理をここに記述
+	stage->Release();
 }
-
-void Release() {
-
-}
-
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -73,7 +63,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	crrTime = GetNowCount();
 	prevTime = GetNowCount();
 
-	Initialize();
+	Initialize(); // 独自の初期化処理
 
 	while (true)
 	{
@@ -84,12 +74,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// 前回の時間との差分を計算
 		float deltaTime = (crrTime - prevTime) / 1000.0f; // 秒単位に変換
 		gDeltaTime = deltaTime; // グローバル変数に保存
-
+		
 		//ここにやりたい処理を書く
-		Update();
-
-		Draw();
-		DrawStage();
+		Update(); // 独自の更新処理
+		Draw(); // 独自の描画処理
 
 		ScreenFlip();
 		WaitTimer(16);
@@ -102,7 +90,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			break;
 	}
 
-	Release();
+	Release(); // 独自の終了処理
 	DxLib_End();
 	return 0;
 }

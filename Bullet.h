@@ -1,18 +1,21 @@
 #pragma once
-#include "BaseChara.h"
+#include "Base.h"
 
-class Bullet : BaseChara{
-private:
-	float lifeTime_;
-	float radius_;
+class Bullet :
+    public Base
+{
 public:
-	Bullet();
-	Bullet(const Vector2D& pos, const Vector2D& vel, unsigned int color, SHAPE shape);
-	~Bullet();
-	void Draw() override;
-	void Update() override;
+    Bullet(const Vector2D& pos, const Vector2D& vel, unsigned int color,
+        float radius, float lifeSec);
 
-	bool IsDead() const { return lifeTime_ <= 0; };
-	float GetRadius() const { return radius_; };
+    void Update() override;
+    void Draw() override;
+
+    bool IsDead() const { return life_ <= 0.0f; }
+    float Radius() const { return radius_; }
+
+private:
+    float radius_;
+    float life_; // Žc‚èŽõ–½i•bj
 };
 

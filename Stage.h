@@ -1,15 +1,24 @@
 #pragma once
-#include "Player.h"
+#include <vector>
 
-class Stage {
+class Bullet;
+class Player;
+class Enemy;
+class Stage
+{
 public:
-	Stage();
+    Stage();
 	~Stage();
-	void Draw();
 	void Initialize();
-	void Update();
+    void Update();
+    void Draw();
 	void Release();
 private:
-	Player* player;
+    void SpawnBullet();   // ”­Ëˆ—iZ‰Ÿ‰ºj
+	void SpawnEnemy();    // “G¶¬ˆ—
+private:
+    Player* player_;
+    std::vector<Bullet *> bullets_;
+    std::vector<Enemy*> enemies_;
 };
 

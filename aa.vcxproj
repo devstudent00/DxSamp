@@ -18,6 +18,27 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Base.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="NewEnemy.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="theMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Base.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Math2D.h" />
+    <ClInclude Include="NewEnemy.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Stage.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{81726786-D8F9-3D38-7B4E-8BC98D834B0A}</ProjectGuid>
@@ -120,23 +141,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="BaseChara.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Stage.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BaseChara.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="global.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Math2D.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Stage.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
