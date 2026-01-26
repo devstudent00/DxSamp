@@ -3,7 +3,8 @@
 
 class Bullet;
 class Player;
-class Enemy;
+//class Enemy;
+class NewEnemy;
 class Stage
 {
 public:
@@ -19,6 +20,6 @@ private:
 private:
     Player* player_;
     std::vector<Bullet *> bullets_;
-    std::vector<Enemy*> enemies_;
+    std::vector<NewEnemy*> enemies_;
 };
 

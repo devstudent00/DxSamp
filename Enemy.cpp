@@ -5,20 +5,14 @@
 #include <cmath>
 #include <algorithm>
 
-namespace
-{
-
-
-
-    inline float WrapAngle(float a)
-    {
+namespace {
+    inline float WrapAngle(float a) {
         a = std::fmod(a, Math2D::PI2);
         if (a < 0.0f) a += Math2D::PI2;
         return a;
     }
 }
 
-//https://github.com/youetsux/DxSansu/tree/b_test
 Enemy::Enemy(const Vector2D& pos,
     const Vector2D& vel,
     unsigned int color,

@@ -3,7 +3,8 @@
 #include <DxLib.h>
 #include "Input.h"
 #include "Bullet.h"
-#include "Enemy.h"
+//#include "Enemy.h"
+#include "NewEnemy.h"
 
 namespace
 {
@@ -103,7 +104,7 @@ void Stage::Initialize()
 		OMEGA
 	);
     // とりあえず敵を数体出す
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         SpawnEnemy();
     }
@@ -137,7 +138,7 @@ void Stage::Update()
     for (auto b : bullets_) b->Update();
 
     // Update enemies
-    for (Enemy* e : enemies_)
+    for (NewEnemy* e : enemies_)
     {
         if (e) e->Update();
     }
@@ -202,22 +203,24 @@ void Stage::SpawnEnemy()
     Vector2D vel(std::cos(ang) * spd, std::sin(ang) * spd);
 
     // 形状
-    float baseR = EnemyParams::RandRange(EnemyParams::R_MIN, EnemyParams::R_MAX);
+    //float baseR = EnemyParams::RandRange(EnemyParams::R_MIN, EnemyParams::R_MAX);
     int segments = EnemyParams::RandRangeInt(EnemyParams::SEGMENTS_MIN, EnemyParams::SEGMENTS_MAX);
-    float jitter = EnemyParams::RandRange(EnemyParams::JITTER_MIN, EnemyParams::JITTER_MAX);
+    //float jitter = EnemyParams::RandRange(EnemyParams::JITTER_MIN, EnemyParams::JITTER_MAX);
 
     // 回転
-    float omega = EnemyParams::RandRange(EnemyParams::OMEGA_MIN, EnemyParams::OMEGA_MAX);
+    //float omega = EnemyParams::RandRange(EnemyParams::OMEGA_MIN, EnemyParams::OMEGA_MAX);
 
-    enemies_.push_back(new Enemy(
-        pos,
-        vel,
-        EnemyParams::COLOR(),
-        baseR,
-        segments,
-        jitter,
-        omega
-    ));
+	enemies_.push_back(new NewEnemy(segments));
+
+    //enemies_.push_back(new Enemy(
+    //    pos,
+    //    vel,
+    //    EnemyParams::COLOR(),
+    //    baseR,
+    //    segments,
+    //    jitter,
+    //    omega
+    //));
 }
 
 void Stage::Draw()
@@ -227,7 +230,7 @@ void Stage::Draw()
         player_->Draw();
     }
     // 敵→弾→プレイヤー（好み。弾を上に出すなら敵→プレイヤー→弾でもOK）
-    for (Enemy* e : enemies_)
+    for (NewEnemy* e : enemies_)
     {
         if (e) e->Draw();
     }
@@ -248,7 +251,7 @@ void Stage::Release()
     }
     bullets_.clear();
     // Enemies
-    for (Enemy* e : enemies_)
+    for (NewEnemy* e : enemies_)
     {
         delete e;
     }

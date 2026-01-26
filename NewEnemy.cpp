@@ -8,8 +8,8 @@ namespace {
 }
 
 NewEnemy::NewEnemy(int segment)
- : Base(), segment_(segment){
-	pos_ = { GetRand(WIN_WIDTH - 1), GetRand(WIN_HEIGHT - 1) };
+ : Base(), segment_(segment), isAlive_(true){
+	pos_ = { (float) GetRand(WIN_WIDTH - 1), (float) GetRand(WIN_HEIGHT - 1) };
 	vel_ = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100)};
 	Color_ = GetColor(255, 255, 255);
 	if (segment_ < SEGMENT_MIN) {
@@ -17,16 +17,39 @@ NewEnemy::NewEnemy(int segment)
 	}
 	radius_ = (float)(GetRand(50) + MIN_RADIUS); //25～75の半径
 	vertex_.resize(segment_);
+
+	angle_ = 0.0f;
+	omega_ = (float)(GetRand(200) - 100) / 100.0f; //-1.0～1.0の角速度
+
+	MakeShape();
 }
 
 void NewEnemy::Update()
 {
+	float dt = GetDeltaTime();
+	pos_ = Math2D::Add(pos_, Math2D::Mul(vel_, dt));
+
+	//画面外に出たら反対側から出現
+	if (pos_.x < 0) pos_.x = (float)WIN_WIDTH;
+	if (pos_.x > WIN_WIDTH) pos_.x = 0.0f;
+	if (pos_.y < 0) pos_.y = (float)WIN_HEIGHT;
+	if (pos_.y > WIN_HEIGHT) pos_.y = 0.0f;
+
+	angle_ = angle_ + omega_ * dt;
+
+	//当たり判定
+
 }
 
 void NewEnemy::Draw() {
 	std::vector<Vector2D> scrPos(segment_);
 	for(int i = 0; i < segment_; i++) {
-		scrPos[i] = Math2D::World2Screen(vertex_[i]); //頂点をスクリーン座標に変換
+		Vector2D worldPos = Math2D::Add(pos_, vertex_[i]);
+		Mat2 rotMat = Math2D::Rotation(angle_);
+		scrPos[i] = Math2D::TransformPoint(vertex_[i], rotMat);
+		scrPos[i] = Math2D::Add(scrPos[i], pos_);
+		scrPos[i] = Math2D::World2Screen(scrPos[i]);
+		//scrPos[i] = Math2D::World2Screen(worldPos);
 	}
 
 	for (int i = 0; i < segment_; i++) {
@@ -37,14 +60,13 @@ void NewEnemy::Draw() {
 			Color_, 2.0f
 		);
 	}
-	MakeShape();
 }
 
 void NewEnemy::MakeShape() {
 	for (int i = 0; i < segment_; i++) {
 		float angle = (2.0f * DX_PI / (float)segment_) * (float)i;
-		vertex_[i] = { cosf(angle) * radius_, 
-			sinf(angle) * radius_ };
-		pos_ = Math2D::Add(vertex_[i], pos_); //ワールド座標に変換
+		// 半径にランダム性を加える例
+		float length = radius_ / 2.0f + GetRand(10); 
+		vertex_[i] = { cosf(angle) * length, sinf(angle) * length };
 	}
 }
