@@ -225,19 +225,26 @@ void Stage::SpawnEnemy()
 
 void Stage::Draw()
 {
+    //“G‚ÌˆÊ’u‚ÆA“–‚½‚è”»’è‚Ì”¼Œa
+    //’e‚ÌˆÊ’u
+    //isAlive‚ðfalse‚É‚·‚é
+
+    
+
     if (player_)
     {
         player_->Draw();
     }
     // “G¨’e¨ƒvƒŒƒCƒ„[iD‚ÝB’e‚ðã‚Éo‚·‚È‚ç“G¨ƒvƒŒƒCƒ„[¨’e‚Å‚àOKj
-    for (NewEnemy* e : enemies_)
-    {
-        if (e) e->Draw();
-    }
 
-    for (Bullet* b : bullets_)
-    {
-        if (b) b->Draw();
+    for (NewEnemy* e : enemies_) {
+        for (Bullet* b : bullets_) {
+            
+            b->Draw();
+
+            if (e->IsAlive())
+                e->Draw();
+        }
     }
 }
 
