@@ -16,6 +16,7 @@ public:
 	void Draw() override;
 	void MakeShape();
 	bool IsAlive() const { return isAlive_; };
+	void Dead() { isAlive_ = false; };
 	int Radius() const { return radius_; };
 };
 

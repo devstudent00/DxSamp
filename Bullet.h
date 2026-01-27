@@ -11,6 +11,7 @@ public:
     void Update() override;
     void Draw() override;
 
+	void Dead() { life_ = 0.0f; }
     bool IsDead() const { return life_ <= 0.0f; }
     float Radius() const { return radius_; }
 

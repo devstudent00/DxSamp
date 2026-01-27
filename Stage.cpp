@@ -141,6 +141,19 @@ void Stage::Update()
     for (NewEnemy* e : enemies_)
     {
         if (e) e->Update();
+
+		// 弾と敵の当たり判定
+		for (Bullet* b : bullets_) {
+            if (!e->IsAlive()) {
+                continue;
+            }
+			float dist = Math2D::Length(Math2D::Sub(b->GetPos(), e->GetPos()));
+			if (dist < b->Radius() + e->Radius()) {
+				// 当たった
+                e->Dead();
+				b->Dead();           // 弾を消す
+			}
+		}
     }
 
 
@@ -238,12 +251,11 @@ void Stage::Draw()
     // 敵→弾→プレイヤー（好み。弾を上に出すなら敵→プレイヤー→弾でもOK）
 
     for (NewEnemy* e : enemies_) {
-        for (Bullet* b : bullets_) {
-            
-            b->Draw();
+        if (e->IsAlive())
+            e->Draw();
 
-            if (e->IsAlive())
-                e->Draw();
+        for (Bullet* b : bullets_) {
+            b->Draw();
         }
     }
 }
@@ -267,5 +279,17 @@ void Stage::Release()
 	{
 		delete player_;
 		player_ = nullptr;
+	}
+}
+
+void Stage::DeleteBullet() {
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+		if ((*it)->IsDead()) {
+			delete* it; // メモリ解放
+			it = bullets_.erase(it); // イテレータを更新
+		}
+		else {
+			it++; // 次の要素へ
+		}
 	}
 }
