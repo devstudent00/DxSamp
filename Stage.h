@@ -14,6 +14,7 @@ public:
     void Update();
     void Draw();
 	void Release();
+    void DeleteBullet();
 private:
     void SpawnBullet();   // ”­Ëˆ—iZ‰Ÿ‰ºj
 	void SpawnEnemy();    // “G¶¬ˆ—
