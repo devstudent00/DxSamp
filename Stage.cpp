@@ -42,6 +42,8 @@ namespace
 
     namespace EnemyParams
     {
+        constexpr int ENEMY_MAX = 100;
+
         // Œ©‚½–Ú
         constexpr int   SEGMENTS_MIN = 12;
         constexpr int   SEGMENTS_MAX = 20;
@@ -104,7 +106,7 @@ void Stage::Initialize()
 		OMEGA
 	);
     // ‚Æ‚è‚ ‚¦‚¸“G‚ğ”‘Ìo‚·
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < EnemyParams::ENEMY_MAX; ++i)
     {
         SpawnEnemy();
     }
@@ -239,12 +241,12 @@ void Stage::Draw()
 
     for (NewEnemy* e : enemies_) {
         for (Bullet* b : bullets_) {
-            
-            b->Draw();
 
-            if (e->IsAlive())
-                e->Draw();
+            b->Draw();
         }
+
+        if (e->IsAlive())
+            e->Draw();
     }
 }
 
