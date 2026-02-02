@@ -152,7 +152,7 @@ void Stage::Update()
 			float dist = Math2D::Length(Math2D::Sub(b->GetPos(), e->GetPos()));
 			if (dist < b->Radius() + e->Radius()) {
 				// “–‚½‚Á‚½
-                e->Dead();
+                //e->Dead();
 				b->Dead();           // ’e‚ğÁ‚·
 			}
 		}
@@ -225,7 +225,7 @@ void Stage::SpawnEnemy()
     // ‰ñ“]
     //float omega = EnemyParams::RandRange(EnemyParams::OMEGA_MIN, EnemyParams::OMEGA_MAX);
 
-	enemies_.push_back(new NewEnemy(segments));
+	enemies_.push_back(new NewEnemy(Size::LARGE, 8));
 
     //enemies_.push_back(new Enemy(
     //    pos,
