@@ -42,7 +42,7 @@ namespace
 
     namespace EnemyParams
     {
-        constexpr int ENEMY_MAX = 100;
+        constexpr int ENEMY_MAX = 50;
 
         // 見た目
         constexpr int   SEGMENTS_MIN = 12;
@@ -105,6 +105,8 @@ void Stage::Initialize()
 		RADIUS,
 		OMEGA
 	);
+	enemies_.clear();
+	enemies_.reserve(EnemyParams::ENEMY_MAX);
     // とりあえず敵を数体出す
     for (int i = 0; i < EnemyParams::ENEMY_MAX; ++i)
     {
@@ -142,7 +144,8 @@ void Stage::Update()
     // Update enemies
     for (NewEnemy* e : enemies_)
     {
-        if (e) e->Update();
+		if (e == nullptr) continue;
+        e->Update();
 
 		// 弾と敵の当たり判定
 		for (Bullet* b : bullets_) {
@@ -150,9 +153,27 @@ void Stage::Update()
                 continue;
             }
 			float dist = Math2D::Length(Math2D::Sub(b->GetPos(), e->GetPos()));
+			Size size = e->GetSize();
 			if (dist < b->Radius() + e->Radius()) {
-				// 当たった
-                //e->Dead();
+                if (size == Size::SMALL) {
+                    // 何もしない
+                }
+                else if (size == Size::MEDIUM) {
+					for (int n = 0; n < 2; n++) { // 中サイズ→小サイズ2体に分裂
+                        NewEnemy* enemy = new NewEnemy(Size::SMALL, 8);
+						enemy->SetPos(e->GetPos());
+						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
+						//enemies_.push_back(enemy);
+					}
+                }
+                else if (size == Size::LARGE) {
+                    for (int n = 0; n < 2; n++) { // 大サイズ→中サイズ2体に分裂
+                        NewEnemy* enemy = new NewEnemy(Size::MEDIUM, 8);
+						enemy->SetPos(e->GetPos());
+						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
+						//enemies_.push_back(enemy);
+                    }
+                }
 				b->Dead();           // 弾を消す
 			}
 		}
@@ -171,12 +192,6 @@ void Stage::SpawnBullet()
 {
     if (!player_) return;
 
-    // ※ Player 側に以下のアクセサがある前提：
-    //   - Vector2D GetPos() const;
-    //   - Vector2D GetVel() const;   （無いなら 0 でOK）
-    //   - Vector2D GetDir() const;
-    //   - float    GetRadius() const;
-
     Vector2D dir = player_->GetDirVec();
     Vector2D pos = player_->GetPos();
 
@@ -188,11 +203,6 @@ void Stage::SpawnBullet()
     Vector2D vel;
     vel.x = dir.x * BulletParams::SPEED;
     vel.y = dir.y * BulletParams::SPEED;
-
-    // プレイヤーの慣性を弾に乗せたいなら（GetVel() がある場合のみ）
-    // Vector2D pv = player_->GetVel();
-    // vel.x += pv.x;
-    // vel.y += pv.y;
 
     bullets_.push_back(
         new Bullet(pos, vel, BulletParams::COLOR, BulletParams::RADIUS, BulletParams::LIFE)
@@ -216,70 +226,29 @@ void Stage::SpawnEnemy()
     float ang = EnemyParams::RandRange(0.0f, 6.2831853072f);
     float spd = EnemyParams::RandRange(EnemyParams::SPEED_MIN, EnemyParams::SPEED_MAX);
     Vector2D vel(std::cos(ang) * spd, std::sin(ang) * spd);
-
-    // 形状
-    //float baseR = EnemyParams::RandRange(EnemyParams::R_MIN, EnemyParams::R_MAX);
     int segments = EnemyParams::RandRangeInt(EnemyParams::SEGMENTS_MIN, EnemyParams::SEGMENTS_MAX);
-    //float jitter = EnemyParams::RandRange(EnemyParams::JITTER_MIN, EnemyParams::JITTER_MAX);
 
-    // 回転
-    //float omega = EnemyParams::RandRange(EnemyParams::OMEGA_MIN, EnemyParams::OMEGA_MAX);
-
-	enemies_.push_back(new NewEnemy(Size::LARGE, 8));
-
-    //enemies_.push_back(new Enemy(
-    //    pos,
-    //    vel,
-    //    EnemyParams::COLOR(),
-    //    baseR,
-    //    segments,
-    //    jitter,
-    //    omega
-    //));
+	enemies_.push_back(new NewEnemy(Size::MEDIUM, 8));
 }
 
 void Stage::Draw()
 {
-    //敵の位置と、当たり判定の半径
-    //弾の位置
-    //isAliveをfalseにする
-
-    
-
-    if (player_)
-    {
-        player_->Draw();
-    }
-    // 敵→弾→プレイヤー（好み。弾を上に出すなら敵→プレイヤー→弾でもOK）
+    if (player_ != nullptr) player_->Draw();
 
     for (NewEnemy* e : enemies_) {
-        if (e->IsAlive())
-            e->Draw();
+        if (e->IsAlive()) e->Draw();
 
         for (Bullet* b : bullets_) {
-            
             b->Draw();
-
-            if (e->IsAlive())
-                e->Draw();
         }
     }
 }
 
-void Stage::Release()
-{
-
-	// 終了処理が必要ならここに書く
-    for (Bullet* b : bullets_)
-    {
-        delete b;
-    }
+void Stage::Release() {
+    for (Bullet* b : bullets_) delete b;
     bullets_.clear();
-    // Enemies
-    for (NewEnemy* e : enemies_)
-    {
-        delete e;
-    }
+
+    for (NewEnemy* e : enemies_) delete e;
     enemies_.clear();
 	if (player_)
 	{
