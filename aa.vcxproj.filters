@@ -37,6 +37,9 @@
     <ClCompile Include="NewEnemy.cpp">
       <Filter>Chara</Filter>
     </ClCompile>
+    <ClCompile Include="ExplosionEffect.cpp">
+      <Filter>Chara</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -65,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="Stage.h">
       <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionEffect.h">
+      <Filter>Chara</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include "Bullet.h"
 //#include "Enemy.h"
 #include "NewEnemy.h"
+#include "ExplosionEffect.h"
 
 namespace
 {
@@ -28,6 +29,8 @@ namespace
 
     // 形状
     constexpr float RADIUS = 20.0f;
+
+    std::vector<ExplosionEffect*> effects;
 
     // 回転速度（rad/sec）
     constexpr float OMEGA = 2.0f;
@@ -123,6 +126,10 @@ Stage::~Stage()
 
 void Stage::Update()
 {
+    for (auto effect : effects) {
+        effect->Update();
+    }
+
     if (player_)
     {
         player_->Update();
@@ -156,14 +163,18 @@ void Stage::Update()
 			Size size = e->GetSize();
 			if (dist < b->Radius() + e->Radius()) {
                 if (size == Size::SMALL) {
-                    // 何もしない
+                    Vector2D enemyPos = e->GetPos();
+                    Size enemySize = e->GetSize();
+                    
+                    effects.push_back(new ExplosionEffect(enemyPos));
+                    
                 }
                 else if (size == Size::MEDIUM) {
 					for (int n = 0; n < 2; n++) { // 中サイズ→小サイズ2体に分裂
                         NewEnemy* enemy = new NewEnemy(Size::SMALL, 8);
 						enemy->SetPos(e->GetPos());
 						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
-						//enemies_.push_back(enemy);
+                        //enemies_.push_back(enemy);
 					}
                 }
                 else if (size == Size::LARGE) {
@@ -228,7 +239,7 @@ void Stage::SpawnEnemy()
     Vector2D vel(std::cos(ang) * spd, std::sin(ang) * spd);
     int segments = EnemyParams::RandRangeInt(EnemyParams::SEGMENTS_MIN, EnemyParams::SEGMENTS_MAX);
 
-	enemies_.push_back(new NewEnemy(Size::MEDIUM, 8));
+	enemies_.push_back(new NewEnemy(Size::SMALL, 8));
 }
 
 void Stage::Draw()
@@ -241,6 +252,10 @@ void Stage::Draw()
         for (Bullet* b : bullets_) {
             b->Draw();
         }
+    }
+
+    for (ExplosionEffect* effect : effects) {
+        effect->Draw();
     }
 }
 

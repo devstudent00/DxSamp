@@ -4,6 +4,8 @@
 #include <cmath>
 #include "globals.h"
 #include "Input.h"
+#include "ExplosionEffect.h"
+
 
 namespace {
 
