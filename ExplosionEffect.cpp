@@ -1,6 +1,8 @@
 #include "ExplosionEffect.h"
 #include <DxLib.h>
 #include "Math2D.h"
+#include "easefunction.h"
+using namespace Direct3D;
 
 namespace {
 	const Vector2D PARTICLE_OFFSET = { 0.0f, 0.0f };
@@ -44,7 +46,9 @@ void ExplosionEffect::Update()
 		if (particle.life > 0.0f) {
 			allDead = false;
 			particle.offset_ = Math2D::Add(particle.offset_, Math2D::Mul(particle.velocity, dt)); // offset + (vel*dt);
-			particle.velocity = Math2D::Mul(particle.velocity, PARTICLE_DECAY);
+			// particle.velocity = Math2D::Mul(particle.velocity, PARTICLE_DECAY);
+			float ratio = 1.0f - particle.life / PARTICLE_LIFE;
+			particle.velocity = Math2D::Mul(particle.velocity, 1.0 - EaseFunc["InOutQuart"](ratio));
 			particle.life -= dt;
 		}
 		if (particle.life < 0.0f) {
@@ -52,12 +56,17 @@ void ExplosionEffect::Update()
 		}
 
 		//•s“§–¾“aXV
-		if (particle.life < 0.5) {
-			particle.alpha = particle.life / 0.5;
-		}
-		else {
-			particle.alpha = 1.0f;
-		}
+		//if (particle.life < 0.5) {
+		//	particle.alpha = particle.life / 0.5;
+		//}
+		//else {
+		//	particle.alpha = 1.0f;
+		//}
+
+		float lifeRatio = 1.0f - particle.life / PARTICLE_LIFE;
+		particle.alpha = 1.0f - EaseFunc["InExpo"](lifeRatio);
+		
+
 	}
 
 	if (allDead) {
