@@ -13,6 +13,7 @@ public:
 	bool IsFinished() const { return isFinished_; }
 
 	struct Particle {
+		float alpha;
 		Vector2D offset_; //ˆÊ’u
 		Vector2D velocity; //‘¬“x
 		float life; //Žõ–½

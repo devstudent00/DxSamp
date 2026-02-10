@@ -10,7 +10,6 @@ namespace {
 	const int PARTICLE_RADIUS = 1.5f;
 	const int PARTICLE_SIZE = 20;
 	const float PARTICLE_DECAY = 0.95f; //å∏êäó¶
-	int RGB_COLOR[3] = { 255, 255, 255 };
 }
 
 ExplosionEffect::ExplosionEffect(Vector2D pos, int particleCount)
@@ -51,6 +50,14 @@ void ExplosionEffect::Update()
 		if (particle.life < 0.0f) {
 			particle.life = 0.0f;
 		}
+
+		//ïsìßñæìaçXêV
+		if (particle.life < 0.5) {
+			particle.alpha = particle.life / 0.5;
+		}
+		else {
+			particle.alpha = 1.0f;
+		}
 	}
 
 	if (allDead) {
@@ -66,11 +73,14 @@ void ExplosionEffect::Draw() {
 			Vector2D drawPos = Math2D::Add(GetPos(), particle.offset_);
 			Vector2D screenPos = Math2D::World2Screen(drawPos);
 			//DrawCircle((int) screenPos.x, (int) screenPos.y, particle.radius, GetColor(255, 0, 0));
+			unsigned int particleColor = GetColor(
+				(int)(255 * particle.alpha),
+				(int)(255 * particle.alpha),
+				(int)(255 * particle.alpha)
+			);
 			
-			DrawCircleAA((int)screenPos.x, (int)screenPos.y, particle.radius, 60, GetColor(RGB_COLOR[0], RGB_COLOR[1], RGB_COLOR[2]));
-			RGB_COLOR[0]--;
-			RGB_COLOR[1]--;
-			RGB_COLOR[2]--;
+			DrawCircleAA((int)screenPos.x, (int)screenPos.y, particle.radius, 60, 
+				particleColor);
 		}
 	}
 }
