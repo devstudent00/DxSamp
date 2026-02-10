@@ -176,6 +176,7 @@ void Stage::Update()
 						enemy->SetPos(e->GetPos());
 						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
                         enemies_.push_back(enemy);
+                        e->Dead();
                         RemoveEnemy(e);
 					}
                     

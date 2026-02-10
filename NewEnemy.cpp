@@ -113,7 +113,7 @@ void NewEnemy::MakeShape() {
 }
 
 void NewEnemy::Dead() {
-	isAlive_ = true;
+	isAlive_ = false;
 }
 
 float NewEnemy::RandomRadius(Size size){
