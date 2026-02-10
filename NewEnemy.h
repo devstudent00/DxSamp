@@ -25,6 +25,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	void MakeShape();
+	void Dead();
 	float RandomRadius(Size size); //サイズに応じたランダム半径取得
 	bool IsAlive() const { return isAlive_; };
 	int Radius() const { return radius_; };

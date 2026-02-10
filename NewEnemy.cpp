@@ -65,6 +65,7 @@ NewEnemy::NewEnemy(const Vector2D& pos, const Vector2D& vel, Size size, int segm
 
 void NewEnemy::Update()
 {
+	if (!isAlive_) return;
 	float dt = GetDeltaTime();
 	pos_ = Math2D::Add(pos_, Math2D::Mul(vel_, dt));
 
@@ -81,6 +82,7 @@ void NewEnemy::Update()
 }
 
 void NewEnemy::Draw() {
+	if (!isAlive_) return;
 	std::vector<Vector2D> scrPos(segment_);
 	for(int i = 0; i < segment_; i++) {
 		Vector2D worldPos = Math2D::Add(pos_, vertex_[i]);
@@ -108,6 +110,10 @@ void NewEnemy::MakeShape() {
 		float length = radius_ / 2.0f + GetRand(10); 
 		vertex_[i] = { cosf(angle) * length, sinf(angle) * length };
 	}
+}
+
+void NewEnemy::Dead() {
+	isAlive_ = true;
 }
 
 float NewEnemy::RandomRadius(Size size){

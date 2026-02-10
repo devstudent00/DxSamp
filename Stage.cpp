@@ -149,9 +149,10 @@ void Stage::Update()
     for (auto b : bullets_) b->Update();
 
     // Update enemies
-    for (NewEnemy* e : enemies_)
-    {
+    for (int n = 0; n < enemies_.size(); n++) {
+        NewEnemy* e = enemies_.at(n);
 		if (e == nullptr) continue;
+        if (!e->IsAlive()) return;
         e->Update();
 
 		// 弾と敵の当たり判定
@@ -174,8 +175,10 @@ void Stage::Update()
                         NewEnemy* enemy = new NewEnemy(Size::SMALL, 8);
 						enemy->SetPos(e->GetPos());
 						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
-                        //enemies_.push_back(enemy);
+                        enemies_.push_back(enemy);
+                        RemoveEnemy(e);
 					}
+                    
                 }
                 else if (size == Size::LARGE) {
                     for (int n = 0; n < 2; n++) { // 大サイズ→中サイズ2体に分裂
@@ -239,7 +242,7 @@ void Stage::SpawnEnemy()
     Vector2D vel(std::cos(ang) * spd, std::sin(ang) * spd);
     int segments = EnemyParams::RandRangeInt(EnemyParams::SEGMENTS_MIN, EnemyParams::SEGMENTS_MAX);
 
-	enemies_.push_back(new NewEnemy(Size::SMALL, 8));
+	enemies_.push_back(new NewEnemy(Size::MEDIUM, 8));
 }
 
 void Stage::Draw()
@@ -282,4 +285,16 @@ void Stage::DeleteBullet() {
 			it++; // 次の要素へ
 		}
 	}
+}
+
+void Stage::RemoveEnemy(NewEnemy* enemy) {
+    for (auto it = enemies_.begin(); it != enemies_.end(); ) {
+        if ((*it)->IsAlive()) {
+            it++; // 次の要素へ
+        }
+        else {
+            delete* it; // メモリ解放
+            it = enemies_.erase(it); // イテレータを更新
+        }
+    }
 }
