@@ -90,36 +90,25 @@ namespace
 
 
 Stage::Stage()
-    : player_(nullptr)
-{
+    : player_(nullptr) {}
 
-}
-
-void Stage::Initialize()
-{
+void Stage::Initialize() {
     Release();
 	// 初期化処理が必要ならここに書く
     // Player は Stage が所有（生成して保持）
     player_ = new Player(
-		START_POS,
-		START_VEL,
-		COLOR,
-		START_DIR,
-		RADIUS,
-		OMEGA
+		START_POS, START_VEL, COLOR, START_DIR, RADIUS, OMEGA
 	);
 	enemies_.clear();
 	enemies_.reserve(EnemyParams::ENEMY_MAX);
     // とりあえず敵を数体出す
-    for (int i = 0; i < EnemyParams::ENEMY_MAX; ++i)
-    {
+    for (int i = 0; i < EnemyParams::ENEMY_MAX; ++i) {
         SpawnEnemy();
     }
 }
 
 // Stage.h にデストラクタ宣言が無くても、暗黙デストラクタをここで定義できる
-Stage::~Stage()
-{
+Stage::~Stage() {
     delete player_;
     player_ = nullptr;
 }
@@ -139,7 +128,7 @@ void Stage::Update() {
     for (int n = 0; n < enemies_.size(); n++) {
         NewEnemy* enemy = enemies_.at(n);
 		if (enemy == nullptr) continue;
-        if (!enemy->IsAlive()) return;
+        if (!enemy->IsAlive()) continue;
         enemy->Update();
 
 		// 弾と敵の当たり判定
@@ -151,28 +140,14 @@ void Stage::Update() {
 			if (distance < b->Radius() + enemy->Radius()) {
                 if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
                     effects.push_back(new ExplosionEffect(enemyPos)); //エフェクトを出す
+                    RemoveEnemy(enemy);
                 }
                 else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
-					for (int n = 0; n < 2; n++) {
-                        NewEnemy* newEnemy = new NewEnemy(Size::SMALL, 8);
-                        Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
-                        newEnemy->SetPos(enemyPos);
-                        newEnemy->SetVel(randomVel);
-                        enemies_.push_back(newEnemy); //分裂した敵を、リストに入れる
-					}                    
+                    RandomSpawnEnemy(enemy, 2, Size::SMALL);                 
                 }
                 else if (enemySize == Size::LARGE) { //
-                    for (int n = 0; n < 2; n++) { // 大サイズの場合、中サイズ2体を出す
-                        NewEnemy* newEnemy = new NewEnemy(Size::MEDIUM, 8);
-                        Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
-						newEnemy->SetPos(enemyPos);
-						newEnemy->SetVel(randomVel);
-						enemies_.push_back(newEnemy); //分裂した敵を、リストに入れる
-                    }
+                    RandomSpawnEnemy(enemy, 2, Size::MEDIUM);
                 }
-
-                enemy->Dead();
-                RemoveEnemy(enemy);
 				b->Dead();           // 弾を消す
 			}
 		}
@@ -187,9 +162,8 @@ void Stage::Update() {
     );
 }
 
-void Stage::SpawnBullet()
-{
-    if (!player_) return;
+void Stage::SpawnBullet() {
+    if (player_ == nullptr) return;
 
     Vector2D dir = player_->GetDirVec();
     Vector2D pos = player_->GetPos();
@@ -208,8 +182,7 @@ void Stage::SpawnBullet()
     );
 }
 
-void Stage::SpawnEnemy()
-{
+void Stage::SpawnEnemy() {
     // 画面端付近から湧かせる（中心湧きよりゲームっぽい）
     const float W = (float)WIN_WIDTH;
     const float H = (float)WIN_HEIGHT;
@@ -230,17 +203,25 @@ void Stage::SpawnEnemy()
 	enemies_.push_back(new NewEnemy(Size::MEDIUM, 8));
 }
 
-void Stage::Draw()
-{
+void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
+    for (int n = 0; n < size; n++) { // 大サイズの場合、中サイズ2体を出す
+        NewEnemy* newEnemy = new NewEnemy((Size) size, 8);
+        Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
+        newEnemy->SetPos(enemy->GetPos());
+        newEnemy->SetVel(randomVel);
+        enemies_.push_back(newEnemy); //分裂した敵を、リストに入れる
+    }
+    RemoveEnemy(enemy);
+}
+
+void Stage::Draw() {
     if (player_ != nullptr) player_->Draw();
 
-    for (NewEnemy* e : enemies_) {
-        if (e->IsAlive()) e->Draw();
-
-        for (Bullet* b : bullets_) {
-            b->Draw();
-        }
+    for (NewEnemy* enemy : enemies_) {
+        if (enemy->IsAlive()) return;
+        enemy->Draw();
     }
+    for (Bullet* bullet : bullets_) bullet->Draw();
 
     for (ExplosionEffect* effect : effects) {
         effect->Draw();
@@ -273,6 +254,7 @@ void Stage::DeleteBullet() {
 }
 
 void Stage::RemoveEnemy(NewEnemy* enemy) {
+    enemy->Dead();
     for (auto it = enemies_.begin(); it != enemies_.end(); ) {
         if ((*it)->IsAlive()) {
             it++; // 次の要素へ
