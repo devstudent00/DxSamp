@@ -124,71 +124,55 @@ Stage::~Stage()
     player_ = nullptr;
 }
 
-void Stage::Update()
-{
-    for (auto& effect : effects) {
-        effect->Update();
-    }
+void Stage::Update() {
 
-    if (player_) {
-        player_->Update();
-    }
-    // 弾発射（押した瞬間）
-    if (Input::IsKeyDown(KEY_INPUT_Z)) {
-        SpawnBullet();
-    }
+    //各オブジェクトのアップデート処理
+    for (auto& effect : effects) effect->Update(); // エフェクト
+    for (auto& bullet : bullets_) bullet->Update(); //弾
+    if (player_ != nullptr) player_->Update(); //プレイヤー
 
-    // 敵追加スポーン（デバッグ用：Eキー）
-    if (Input::IsKeyDown(KEY_INPUT_E)) {
-        SpawnEnemy();
-    }
-
-    for (auto& b : bullets_) b->Update();
+    // キーによる処理
+    if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
+    if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
 
     // Update enemies
     for (int n = 0; n < enemies_.size(); n++) {
-        NewEnemy* e = enemies_.at(n);
-		if (e == nullptr) continue;
-        if (!e->IsAlive()) return;
-        e->Update();
+        NewEnemy* enemy = enemies_.at(n);
+		if (enemy == nullptr) continue;
+        if (!enemy->IsAlive()) return;
+        enemy->Update();
 
 		// 弾と敵の当たり判定
-		for (Bullet* b : bullets_) {
-            if (!e->IsAlive()) {
-                continue;
-            }
-			float dist = Math2D::Length(Math2D::Sub(b->GetPos(), e->GetPos()));
-			Size size = e->GetSize();
-			if (dist < b->Radius() + e->Radius()) {
-                if (size == Size::SMALL) {
-                    Vector2D enemyPos = e->GetPos();
-                    Size enemySize = e->GetSize();
-                    
-                    effects.push_back(new ExplosionEffect(enemyPos));
-                    e->Dead();
-                    RemoveEnemy(e);
+		for (Bullet* b : bullets_) {            
+			float distance = Math2D::Length(Math2D::Sub(b->GetPos(), enemy->GetPos())); //弾と敵の距離
+            Vector2D enemyPos = enemy->GetPos();
+            Size enemySize = enemy->GetSize();
+            
+			if (distance < b->Radius() + enemy->Radius()) {
+                if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
+                    effects.push_back(new ExplosionEffect(enemyPos)); //エフェクトを出す
                 }
-                else if (size == Size::MEDIUM) {
-					for (int n = 0; n < 2; n++) { // 中サイズ→小サイズ2体に分裂
-                        NewEnemy* enemy = new NewEnemy(Size::SMALL, 8);
-						enemy->SetPos(e->GetPos());
-						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
-                        enemies_.push_back(enemy);
-                        e->Dead();
-                        RemoveEnemy(e);
-					}
-                    
+                else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
+					for (int n = 0; n < 2; n++) {
+                        NewEnemy* newEnemy = new NewEnemy(Size::SMALL, 8);
+                        Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
+                        newEnemy->SetPos(enemyPos);
+                        newEnemy->SetVel(randomVel);
+                        enemies_.push_back(newEnemy); //分裂した敵を、リストに入れる
+					}                    
                 }
-                else if (size == Size::LARGE) {
-                    for (int n = 0; n < 2; n++) { // 大サイズ→中サイズ2体に分裂
-                        NewEnemy* enemy = new NewEnemy(Size::MEDIUM, 8);
-						enemy->SetPos(e->GetPos());
-						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
-						enemies_.push_back(enemy);
-                        e->Dead();
-                        RemoveEnemy(e);
+                else if (enemySize == Size::LARGE) { //
+                    for (int n = 0; n < 2; n++) { // 大サイズの場合、中サイズ2体を出す
+                        NewEnemy* newEnemy = new NewEnemy(Size::MEDIUM, 8);
+                        Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
+						newEnemy->SetPos(enemyPos);
+						newEnemy->SetVel(randomVel);
+						enemies_.push_back(newEnemy); //分裂した敵を、リストに入れる
                     }
                 }
+
+                enemy->Dead();
+                RemoveEnemy(enemy);
 				b->Dead();           // 弾を消す
 			}
 		}
