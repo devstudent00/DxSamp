@@ -126,27 +126,24 @@ Stage::~Stage()
 
 void Stage::Update()
 {
-    for (auto effect : effects) {
+    for (auto& effect : effects) {
         effect->Update();
     }
 
-    if (player_)
-    {
+    if (player_) {
         player_->Update();
     }
     // 弾発射（押した瞬間）
-    if (Input::IsKeyDown(KEY_INPUT_Z))
-    {
+    if (Input::IsKeyDown(KEY_INPUT_Z)) {
         SpawnBullet();
     }
 
     // 敵追加スポーン（デバッグ用：Eキー）
-    if (Input::IsKeyDown(KEY_INPUT_E))
-    {
+    if (Input::IsKeyDown(KEY_INPUT_E)) {
         SpawnEnemy();
     }
 
-    for (auto b : bullets_) b->Update();
+    for (auto& b : bullets_) b->Update();
 
     // Update enemies
     for (int n = 0; n < enemies_.size(); n++) {
@@ -168,7 +165,8 @@ void Stage::Update()
                     Size enemySize = e->GetSize();
                     
                     effects.push_back(new ExplosionEffect(enemyPos));
-                    
+                    e->Dead();
+                    RemoveEnemy(e);
                 }
                 else if (size == Size::MEDIUM) {
 					for (int n = 0; n < 2; n++) { // 中サイズ→小サイズ2体に分裂
@@ -186,7 +184,9 @@ void Stage::Update()
                         NewEnemy* enemy = new NewEnemy(Size::MEDIUM, 8);
 						enemy->SetPos(e->GetPos());
 						enemy->SetVel({ (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) });
-						//enemies_.push_back(enemy);
+						enemies_.push_back(enemy);
+                        e->Dead();
+                        RemoveEnemy(e);
                     }
                 }
 				b->Dead();           // 弾を消す
