@@ -32,4 +32,3 @@ private:
     std::vector<Bullet *> bullets_;
     std::vector<NewEnemy*> enemies_;
 };
-

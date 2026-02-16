@@ -17,6 +17,20 @@ namespace {
         objects.push_back(obj);
     }
 
+    // void RemoveObject(Base* obj) {}
+
+    void UpdateObjects() {
+        for (auto& obj : objects) {
+            obj->Update();
+        }
+    }
+
+    void DrawObjects() {
+        for (auto& obj : objects) {
+            obj->Draw();
+        }
+    }
+
     // ---- 初期パラメータ ----
 	const Vector2D START_POS = Vector2D((float)(WIN_WIDTH / 2), (float)(WIN_HEIGHT / 2)); //初期位置（画面中央）
 	const Vector2D START_VEL = Vector2D(0.0f, 0.0f);  // 初期速度（ゼロ）
@@ -102,7 +116,7 @@ void Stage::Update() {
     //各オブジェクトのアップデート処理
     for (auto& effect : effects) effect->Update(); // エフェクト
     for (auto& bullet : bullets_) bullet->Update(); //弾
-    if (player_ != nullptr) player_->Update(); //プレイヤー
+    UpdateObjects();
 
     // キーによる処理
     if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
@@ -199,10 +213,10 @@ void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
 }
 
 void Stage::Draw() {
-    if (player_ != nullptr) player_->Draw();
+    DrawObjects();
 
     for (NewEnemy* enemy : enemies_) {
-        if (enemy->IsAlive()) return;
+        if (!enemy->IsAlive()) continue;
         enemy->Draw();
     }
     for (Bullet* bullet : bullets_) bullet->Draw();
