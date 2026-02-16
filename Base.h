@@ -1,5 +1,6 @@
 #pragma once
 #include "Math2D.h"
+#include <string>
 
 class Base
 {
@@ -21,5 +22,6 @@ protected:
 	Vector2D pos_;//ˆÊ’u
 	Vector2D vel_;//‘¬“x
 	unsigned int Color_;//F •„†‚È‚µ®”
+	std::string objName_;
 };
 
