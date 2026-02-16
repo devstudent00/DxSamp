@@ -1,3 +1,4 @@
+#include "Base.h"
 #include "Stage.h"
 #include "Player.h"
 #include <DxLib.h>
@@ -7,84 +8,66 @@
 #include "NewEnemy.h"
 #include "ExplosionEffect.h"
 
-namespace
-{
-    // ---- 初期パラメータ ----
-
-    // 初期位置（画面中央）
-	constexpr float START_X = (float)(WIN_WIDTH / 2);
-	constexpr float START_Y = (float)(WIN_HEIGHT / 2);
-	const Vector2D START_POS = Vector2D(START_X, START_Y);
-
-    // 初期速度
-    constexpr float START_VX = 0.0f;
-    constexpr float START_VY = 0.0f;
-	const Vector2D START_VEL = Vector2D(START_VX, START_VY);
-
-
-    // 初期向き（上向き）
-    constexpr float DIR_X = 0.0f;
-    constexpr float DIR_Y = -1.0f;
-	const Vector2D START_DIR = Vector2D(DIR_X, DIR_Y);
-
-    // 形状
-    constexpr float RADIUS = 20.0f;
-
+namespace {
+    
+    std::vector<Base*> objects;
     std::vector<ExplosionEffect*> effects;
 
-    // 回転速度（rad/sec）
-    constexpr float OMEGA = 2.0f;
+    void AddObject(Base* obj) {
+        objects.push_back(obj);
+    }
+
+    // ---- 初期パラメータ ----
+	const Vector2D START_POS = Vector2D((float)(WIN_WIDTH / 2), (float)(WIN_HEIGHT / 2)); //初期位置（画面中央）
+	const Vector2D START_VEL = Vector2D(0.0f, 0.0f);  // 初期速度（ゼロ）
+    const Vector2D START_DIR = Vector2D(0.0f, -1.0f); //初期の向き（上向き）
+    constexpr float RADIUS = 20.0f; // 形状
+    constexpr float OMEGA = 2.0f; // 回転速度（rad/sec）
 	const unsigned int COLOR = GetColor(255, 0, 0); // 赤
-	namespace BulletParams
-	{
-		constexpr float SPEED = 600.0f;          // 速度
-		const unsigned int COLOR = GetColor(255, 255, 255); // 白
-		constexpr float RADIUS = 2.0f;           // 半径
-		constexpr float LIFE = 3.0f;             // 寿命（秒）
-	}
+}
 
-    namespace EnemyParams
-    {
-        constexpr int ENEMY_MAX = 50;
+namespace BulletParams {
+    constexpr float SPEED = 600.0f;          // 速度
+    const unsigned int COLOR = GetColor(255, 255, 255); // 白
+    constexpr float RADIUS = 2.0f;           // 半径
+    constexpr float LIFE = 3.0f;             // 寿命（秒）
+}
 
-        // 見た目
-        constexpr int   SEGMENTS_MIN = 12;
-        constexpr int   SEGMENTS_MAX = 20;
-        constexpr float JITTER_MIN = 0.25f;
-        constexpr float JITTER_MAX = 0.45f;
+namespace EnemyParams {
+    constexpr int ENEMY_MAX = 50;
 
-        // サイズ
-        constexpr float R_MIN = 25.0f;
-        constexpr float R_MAX = 60.0f;
+    // 見た目
+    constexpr int   SEGMENTS_MIN = 12;
+    constexpr int   SEGMENTS_MAX = 20;
+    constexpr float JITTER_MIN = 0.25f;
+    constexpr float JITTER_MAX = 0.45f;
 
-        // 移動
-        constexpr float SPEED_MIN = 80.0f;
-        constexpr float SPEED_MAX = 220.0f;
+    // サイズ
+    constexpr float R_MIN = 25.0f;
+    constexpr float R_MAX = 60.0f;
 
-        // 回転
-        constexpr float OMEGA_MIN = -1.2f; // rad/sec
-        constexpr float OMEGA_MAX = 1.2f;
+    // 移動
+    constexpr float SPEED_MIN = 80.0f;
+    constexpr float SPEED_MAX = 220.0f;
 
-        inline unsigned int COLOR()
-        {
-            return GetColor(180, 180, 180);
-        }
+    // 回転
+    constexpr float OMEGA_MIN = -1.2f; // rad/sec
+    constexpr float OMEGA_MAX = 1.2f;
 
-        inline float Rand01()
-        {
-            return (float)GetRand(10000) / 10000.0f;
-        }
+    inline unsigned int COLOR() {
+        return GetColor(180, 180, 180);
+    }
 
-        inline float RandRange(float a, float b)
-        {
-            return a + (b - a) * Rand01();
-        }
+    inline float Rand01() {
+        return (float)GetRand(10000) / 10000.0f;
+    }
 
-        inline int RandRangeInt(int a, int b)
-        {
-            // a..b
-            return a + GetRand(b - a);
-        }
+    inline float RandRange(float a, float b) {
+        return a + (b - a) * Rand01();
+    }
+
+    inline int RandRangeInt(int a, int b) {
+        return a + GetRand(b - a);
     }
 }
 
@@ -94,11 +77,12 @@ Stage::Stage()
 
 void Stage::Initialize() {
     Release();
-	// 初期化処理が必要ならここに書く
-    // Player は Stage が所有（生成して保持）
     player_ = new Player(
 		START_POS, START_VEL, COLOR, START_DIR, RADIUS, OMEGA
 	);
+    objects.push_back(player_);
+    
+
 	enemies_.clear();
 	enemies_.reserve(EnemyParams::ENEMY_MAX);
     // とりあえず敵を数体出す
