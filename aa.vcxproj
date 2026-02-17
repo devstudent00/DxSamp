@@ -39,6 +39,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Math2D.h" />
     <ClInclude Include="NewEnemy.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Stage.h" />
   </ItemGroup>

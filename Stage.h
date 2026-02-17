@@ -14,8 +14,8 @@ public:
     void Update();
     void Draw();
 	void Release();
-    void DeleteBullet();
-    void RemoveEnemy(NewEnemy* enemy);
+    //void DeleteBullet();
+    //void RemoveEnemy(NewEnemy* enemy);
 private:
     void SpawnBullet();   // ”­Ëˆ—iZ‰Ÿ‰ºj
 	void SpawnEnemy();    // “G¶¬ˆ—
@@ -29,6 +29,6 @@ private:
     void RandomSpawnEnemy(NewEnemy* enemy, int count, int size);
 private:
     Player* player_;
-    std::vector<Bullet *> bullets_;
-    std::vector<NewEnemy*> enemies_;
+    ///std::vector<Bullet *> bullets_;
+    //std::vector<NewEnemy*> enemies_;
 };

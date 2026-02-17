@@ -14,7 +14,6 @@ private:
 	float angle_;
 	float omega_;
 	int radius_;
-	bool isAlive_; //生存フラグ、trueなら生存
 	std::vector<Vector2D> vertex_;
 	Size size_;
 public:
@@ -27,7 +26,6 @@ public:
 	void MakeShape();
 	void Dead();
 	float RandomRadius(Size size); //サイズに応じたランダム半径取得
-	bool IsAlive() const { return isAlive_; };
 	int Radius() const { return radius_; };
 	Size GetSize() const { return size_; };
 	Size CheckSize() const;

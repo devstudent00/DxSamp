@@ -7,29 +7,15 @@
 //#include "Enemy.h"
 #include "NewEnemy.h"
 #include "ExplosionEffect.h"
+#include "ObjectManager.h"
 
 namespace {
     
-    std::vector<Base*> objects;
-    std::vector<ExplosionEffect*> effects;
-
-    void AddObject(Base* obj) {
-        objects.push_back(obj);
-    }
+    ObjectManager& objManager = ObjectManager::GetInstance();
+    //std::vector<Base*> objects;
+    // std::vector<ExplosionEffect*> effects;
 
     // void RemoveObject(Base* obj) {}
-
-    void UpdateObjects() {
-        for (auto& obj : objects) {
-            obj->Update();
-        }
-    }
-
-    void DrawObjects() {
-        for (auto& obj : objects) {
-            obj->Draw();
-        }
-    }
 
     // ---- 初期パラメータ ----
 	const Vector2D START_POS = Vector2D((float)(WIN_WIDTH / 2), (float)(WIN_HEIGHT / 2)); //初期位置（画面中央）
@@ -94,12 +80,8 @@ void Stage::Initialize() {
     player_ = new Player(
 		START_POS, START_VEL, COLOR, START_DIR, RADIUS, OMEGA
 	);
-    objects.push_back(player_);
-    
+    objManager.AddObject(player_);
 
-	enemies_.clear();
-	enemies_.reserve(EnemyParams::ENEMY_MAX);
-    // とりあえず敵を数体出す
     for (int i = 0; i < EnemyParams::ENEMY_MAX; ++i) {
         SpawnEnemy();
     }
@@ -114,21 +96,23 @@ Stage::~Stage() {
 void Stage::Update() {
 
     //各オブジェクトのアップデート処理
-    for (auto& effect : effects) effect->Update(); // エフェクト
-    for (auto& bullet : bullets_) bullet->Update(); //弾
-    UpdateObjects();
+    //for (auto& effect : effects) effect->Update(); // エフェクト
+    //for (auto& bullet : bullets_) bullet->Update(); //弾
+    objManager.UpdateObject();
 
     // キーによる処理
     if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
     if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
 
     // Update enemies
+    auto& enemies_ = objManager.GetObjects<NewEnemy>();
+    auto& bullets_ = objManager.GetObjects<Bullet>();
     for (int n = 0; n < enemies_.size(); n++) {
         NewEnemy* enemy = enemies_.at(n);
 		if (enemy == nullptr) continue;
         if (!enemy->IsAlive()) continue;
         enemy->Update();
-
+        
 		// 弾と敵の当たり判定
 		for (Bullet* b : bullets_) {            
 			float distance = Math2D::Length(Math2D::Sub(b->GetPos(), enemy->GetPos())); //弾と敵の距離
@@ -137,8 +121,9 @@ void Stage::Update() {
             
 			if (distance < b->Radius() + enemy->Radius()) {
                 if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
-                    effects.push_back(new ExplosionEffect(enemyPos)); //エフェクトを出す
-                    RemoveEnemy(enemy);
+                    objManager.AddObject(new ExplosionEffect(enemyPos));
+                    //RemoveEnemy(enemy);
+                    objManager.RemoveObject(enemy);
                 }
                 else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
                     RandomSpawnEnemy(enemy, 2, Size::SMALL);                 
@@ -151,13 +136,20 @@ void Stage::Update() {
 		}
     }
 
-
+    auto& bullets__ = objManager.GetObjects<Bullet>();
+    for (int n = 0; n < bullets__.size(); n++) {
+        Bullet* bullet = bullets__.at(n);
+        if (bullet->IsDead()) {
+            objManager.RemoveObject(bullet);
+        }
+    }
+    
     // 寿命で削除
-    bullets_.erase(
-        std::remove_if(bullets_.begin(), bullets_.end(),
-            [](const Bullet* b) { return b->IsDead(); }),
-        bullets_.end()
-    );
+    //bullets_.erase(
+    //    std::remove_if(bullets_.begin(), bullets_.end(),
+    //        [](const Bullet* b) { return b->IsDead(); }),
+    //    bullets_.end()
+    //);
 }
 
 void Stage::SpawnBullet() {
@@ -175,9 +167,7 @@ void Stage::SpawnBullet() {
     vel.x = dir.x * BulletParams::SPEED;
     vel.y = dir.y * BulletParams::SPEED;
 
-    bullets_.push_back(
-        new Bullet(pos, vel, BulletParams::COLOR, BulletParams::RADIUS, BulletParams::LIFE)
-    );
+    objManager.AddObject(new Bullet(pos, vel, BulletParams::COLOR, BulletParams::RADIUS, BulletParams::LIFE));
 }
 
 void Stage::SpawnEnemy() {
@@ -198,7 +188,7 @@ void Stage::SpawnEnemy() {
     Vector2D vel(std::cos(ang) * spd, std::sin(ang) * spd);
     int segments = EnemyParams::RandRangeInt(EnemyParams::SEGMENTS_MIN, EnemyParams::SEGMENTS_MAX);
 
-	enemies_.push_back(new NewEnemy(Size::MEDIUM, 8));
+    objManager.AddObject(new NewEnemy(Size::MEDIUM, 8));
 }
 
 void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
@@ -207,31 +197,17 @@ void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
         Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
         newEnemy->SetPos(enemy->GetPos());
         newEnemy->SetVel(randomVel);
-        enemies_.push_back(newEnemy); //分裂した敵を、リストに入れる
+        objManager.AddObject(newEnemy);
     }
-    RemoveEnemy(enemy);
+    objManager.RemoveObject(enemy);
+    //RemoveEnemy(enemy);
 }
 
-void Stage::Draw() {
-    DrawObjects();
-
-    for (NewEnemy* enemy : enemies_) {
-        if (!enemy->IsAlive()) continue;
-        enemy->Draw();
-    }
-    for (Bullet* bullet : bullets_) bullet->Draw();
-
-    for (ExplosionEffect* effect : effects) {
-        effect->Draw();
-    }
+void Stage::Draw() {   
+    objManager.DrawObject();
 }
 
 void Stage::Release() {
-    for (Bullet* b : bullets_) delete b;
-    bullets_.clear();
-
-    for (NewEnemy* e : enemies_) delete e;
-    enemies_.clear();
 	if (player_)
 	{
 		delete player_;
@@ -239,27 +215,29 @@ void Stage::Release() {
 	}
 }
 
-void Stage::DeleteBullet() {
-	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
-		if ((*it)->IsDead()) {
-			delete* it; // メモリ解放
-			it = bullets_.erase(it); // イテレータを更新
-		}
-		else {
-			it++; // 次の要素へ
-		}
-	}
-}
-
-void Stage::RemoveEnemy(NewEnemy* enemy) {
-    enemy->Dead();
-    for (auto it = enemies_.begin(); it != enemies_.end(); ) {
-        if ((*it)->IsAlive()) {
-            it++; // 次の要素へ
-        }
-        else {
-            delete* it; // メモリ解放
-            it = enemies_.erase(it); // イテレータを更新
-        }
-    }
-}
+//void Stage::DeleteBullet() {
+//    auto& bullets_ = objManager.GetObjects<Bullet>();
+//	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+//		if ((*it)->IsDead()) {
+//			delete* it; // メモリ解放
+//			it = bullets_.erase(it); // イテレータを更新
+//		}
+//		else {
+//			it++; // 次の要素へ
+//		}
+//	}
+//}
+//
+//void Stage::RemoveEnemy(NewEnemy* enemy) {
+//    enemy->Dead();
+//    auto& enemies_ = objManager.GetObjects<NewEnemy>();
+//    for (auto it = enemies_.begin(); it != enemies_.end(); ) {
+//        if ((*it)->IsAlive()) {
+//            it++; // 次の要素へ
+//        }
+//        else {
+//            delete* it; // メモリ解放
+//            it = enemies_.erase(it); // イテレータを更新
+//        }
+//    }
+//}

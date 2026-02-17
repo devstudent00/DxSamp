@@ -10,10 +10,6 @@ Base::Base(const Vector2D& pos, const Vector2D& vel, unsigned int color)
 {
 }
 
-Base::~Base()
-{
-}
-
 void Base::Update()
 {
 }

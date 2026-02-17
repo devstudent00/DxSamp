@@ -17,7 +17,8 @@ namespace {
 }
 
 NewEnemy::NewEnemy(int segment)
- : Base(), segment_(segment), isAlive_(true){
+ : Base(), segment_(segment){
+	isAlive_ = true;
 	pos_ = { (float) GetRand(WIN_WIDTH - 1), (float) GetRand(WIN_HEIGHT - 1) };
 	vel_ = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100)};
 	Color_ = GetColor(255, 255, 255);
@@ -35,7 +36,8 @@ NewEnemy::NewEnemy(int segment)
 }
 
 NewEnemy::NewEnemy(Size size, int segment)
-	: Base(), segment_(segment), isAlive_(true), size_(size) {
+	: Base(), segment_(segment), size_(size) {
+	isAlive_ = true;
 	pos_ = { (float)GetRand(WIN_WIDTH - 1), (float)GetRand(WIN_HEIGHT - 1) };
 	vel_ = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
 	Color_ = GetColor(255, 255, 255);
@@ -51,7 +53,8 @@ NewEnemy::NewEnemy(Size size, int segment)
 }
 
 NewEnemy::NewEnemy(const Vector2D& pos, const Vector2D& vel, Size size, int segment)
- : Base(pos, vel, GetColor(255, 255, 255)), segment_(segment), isAlive_(true), size_(size) {
+ : Base(pos, vel, GetColor(255, 255, 255)), segment_(segment),  size_(size) {
+	isAlive_ = true;
 	if (segment_ < SEGMENT_MIN) {
 		segment_ = SEGMENT_MIN; //Å’á8•ªŠ„
 	}

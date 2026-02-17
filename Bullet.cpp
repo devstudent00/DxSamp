@@ -34,6 +34,8 @@ void Bullet::Update()
 
     if (pos_.y < -radius_)           pos_.y += (H + radius_ * 2.0f);
     else if (pos_.y > H + radius_)   pos_.y -= (H + radius_ * 2.0f);
+
+    isAlive_ = (life_ > 0.0f);
 }
 
 void Bullet::Draw()
