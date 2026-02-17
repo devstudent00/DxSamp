@@ -139,7 +139,7 @@ void Stage::Update() {
     auto& bullets__ = objManager.GetObjects<Bullet>();
     for (int n = 0; n < bullets__.size(); n++) {
         Bullet* bullet = bullets__.at(n);
-        if (bullet->IsDead()) {
+        if (!bullet->IsAlive()) {
             objManager.RemoveObject(bullet);
         }
     }

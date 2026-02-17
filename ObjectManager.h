@@ -23,6 +23,7 @@ public:
 	}
 
 	void RemoveObject(Base* base) {
+		base->isAlive_ = false;
 		for (auto it = baseVector.begin(); it != baseVector.end(); ) {
 			if ((*it)->IsAlive()) {
 				it++;
@@ -38,6 +39,7 @@ public:
 		for (int n = 0; n < baseVector.size(); n++) {
 			auto& obj = baseVector[n];
 			if (obj == nullptr) continue;
+			if (!obj->IsAlive()) continue;
 			obj->Update();
 		}
 	}
@@ -46,6 +48,7 @@ public:
 		for (int n = 0; n < baseVector.size(); n++) {
 			auto& obj = baseVector.at(n);
 			if (obj == nullptr) continue;
+			if (!obj->IsAlive()) continue;
 			obj->Draw();
 		}
 	}
