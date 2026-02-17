@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "input.h"
 #include "Stage.h"
+#include "ImGui/imgui_impl_dxlib.hpp"
 
 namespace
 {
@@ -10,6 +11,7 @@ namespace
 	int prevTime;
 
 	Stage* stage = nullptr;
+	bool DEBUG_MODE = true;
 }
 
 
@@ -38,6 +40,20 @@ void Initialize()
 	// 独自の初期化処理をここに記述
 	stage = new Stage();
 	stage->Initialize();
+
+	SetHookWinProc([](HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) -> LRESULT /*CALLBACK*/
+		{
+			// DxLibとImGuiのウィンドウプロシージャを両立させる
+			SetUseHookWinProcReturnValue(FALSE);
+			return ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+		});
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.Fonts->AddFontFromFileTTF(u8"c:\\Windows\\Fonts\\meiryo.ttc", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
+	ImGui_ImplDXlib_Init();
 }
 
 void Update()
@@ -83,6 +99,24 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		WaitTimer(16);
 
 		prevTime = crrTime; // 現在の時間を前回の時間として保存
+
+		if (DEBUG_MODE) {
+			ImGui_ImplDXlib_NewFrame();
+			ImGui::NewFrame();
+
+			ImGui::Begin("Debug Window");
+			ImGui::Text("DeltaTime: %.3f", gDeltaTime);
+			ImGui::End();
+
+			ImGui::Render();
+			ImGui::EndFrame();
+			ImGui_ImplDXlib_RenderDrawData();
+			RefreshDxLibDirect3DSetting();
+			if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+				ImGui::UpdatePlatformWindows();
+				ImGui::RenderPlatformWindowsDefault();
+			}
+		}
 
 		if (ProcessMessage() == -1)
 			break;
