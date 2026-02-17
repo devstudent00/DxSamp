@@ -3,6 +3,9 @@
 #include "Base.h"
 #include <list>
 
+/// <summary>
+/// フレームワークを参考にし作成した
+/// </summary>
 class ObjectManager {
 private:
 	std::vector<Base*> baseVector;
