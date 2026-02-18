@@ -95,11 +95,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		Update(); // 独自の更新処理
 		Draw(); // 独自の描画処理
 
-		ScreenFlip();
-		WaitTimer(16);
-
-		prevTime = crrTime; // 現在の時間を前回の時間として保存
-
 		if (DEBUG_MODE) {
 			ImGui_ImplDXlib_NewFrame();
 			ImGui::NewFrame();
@@ -117,6 +112,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				ImGui::RenderPlatformWindowsDefault();
 			}
 		}
+
+		ScreenFlip();
+		WaitTimer(16);
+
+		prevTime = crrTime; // 現在の時間を前回の時間として保存
 
 		if (ProcessMessage() == -1)
 			break;
