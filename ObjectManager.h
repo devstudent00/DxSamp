@@ -53,7 +53,7 @@ public:
 		}
 	}
 
-	template<class C> C* GetObject() {
+	template<class C> C* GetGameObject() {
 		for (Base* obj : baseVector) {
 			if (obj == nullptr) continue;
 			C* instance = dynamic_cast<C*>(obj);
@@ -64,7 +64,7 @@ public:
 		return nullptr;
 	}
 
-	template<class C> std::vector<C*> GetObjects() {
+	template<class C> std::vector<C*> GetGameObjects() {
 		std::vector<C*> base;
 		for (Base* obj : baseVector) {
 			if (obj == nullptr) continue;

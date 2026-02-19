@@ -1,6 +1,12 @@
 #pragma once
 #include <vector>
 
+enum GameStatus {
+	TITLE,
+	PLAYING,
+	GAMEOVER
+};
+
 class Bullet;
 class Player;
 //class Enemy;
