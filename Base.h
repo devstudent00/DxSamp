@@ -11,7 +11,7 @@ class Base
 public:
 	Base();
 	Base(const Vector2D& pos, const Vector2D& vel, unsigned int color);
-	virtual ~Base() {}
+	virtual ~Base() = default;
 	virtual void Update(); //オーバーライドしそう
 	virtual void Draw(); //オーバーライドしそう
 public:
