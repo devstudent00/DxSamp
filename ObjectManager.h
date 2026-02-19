@@ -76,5 +76,9 @@ public:
 		}
 		return base;
 	}
+
+	int GetAllObjectSize() {
+		return baseVector.size();
+	}
 };
 

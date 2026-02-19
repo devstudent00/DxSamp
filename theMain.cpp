@@ -1,8 +1,10 @@
 #include "DxLib.h"
+#include "NewEnemy.h"
 #include "globals.h"
 #include "input.h"
 #include "Stage.h"
 #include "ImGui/imgui_impl_dxlib.hpp"
+#include "ObjectManager.h"
 
 namespace
 {
@@ -12,6 +14,8 @@ namespace
 
 	Stage* stage = nullptr;
 	bool DEBUG_MODE = true;
+
+	ObjectManager& objManager = ObjectManager::GetInstance();
 }
 
 
@@ -25,6 +29,7 @@ void DxInit()
 	SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
 	SetWindowSizeExtendRate(1.0);
 	SetBackgroundColor(BGCOLOR[0],BGCOLOR[1],BGCOLOR[2]);
+	SetAlwaysRunFlag(true);
 
 	// ＤＸライブラリ初期化処理
 	if (DxLib_Init() == -1)
@@ -99,8 +104,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ImGui_ImplDXlib_NewFrame();
 			ImGui::NewFrame();
 
+			auto& enemy = objManager.GetObjects<NewEnemy>();
 			ImGui::Begin("Debug Window");
 			ImGui::Text("DeltaTime: %.3f", gDeltaTime);
+			ImGui::Text(u8"すべてのオブジェクトの数：%d", objManager.GetAllObjectSize());
+			ImGui::Text(u8"敵の数：%d", enemy.size());
+			if (ImGui::Button(u8"敵をスポーン")) stage->SpawnEnemy();			
+			
 			ImGui::End();
 
 			ImGui::Render();

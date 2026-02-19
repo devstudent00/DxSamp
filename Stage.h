@@ -16,9 +16,9 @@ public:
 	void Release();
     //void DeleteBullet();
     //void RemoveEnemy(NewEnemy* enemy);
-private:
+
     void SpawnBullet();   // 発射処理（Z押下）
-	void SpawnEnemy();    // 敵生成処理
+    void SpawnEnemy();    // 敵生成処理
 
     /// <summary>
     /// 分裂用の敵をスポーンさせる関数
@@ -27,6 +27,8 @@ private:
     /// <param name="count">敵の数</param>
     /// <param name="size">敵の数（Enumで指定する）</param>
     void RandomSpawnEnemy(NewEnemy* enemy, int count, int size);
+private:
+
 private:
     Player* player_;
     ///std::vector<Bullet *> bullets_;
