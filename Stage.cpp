@@ -120,16 +120,18 @@ void Stage::Update() {
             Size enemySize = enemy->GetSize();
             
 			if (distance < b->Radius() + enemy->Radius()) {
+                // int num = 2;
+                int num = GetRand(3) + 2;
                 if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
                     objManager.AddObject(new ExplosionEffect(enemyPos));
                     //RemoveEnemy(enemy);
                     objManager.RemoveObject(enemy);
                 }
                 else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
-                    RandomSpawnEnemy(enemy, 2, Size::SMALL);                 
+                    RandomSpawnEnemy(enemy, num, Size::SMALL);                 
                 }
                 else if (enemySize == Size::LARGE) { //
-                    RandomSpawnEnemy(enemy, 2, Size::MEDIUM);
+                    RandomSpawnEnemy(enemy, num, Size::MEDIUM);
                 }
 				b->Dead();           // 弾を消す
 			}
@@ -192,7 +194,7 @@ void Stage::SpawnEnemy() {
 }
 
 void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
-    for (int n = 0; n < size; n++) { // 大サイズの場合、中サイズ2体を出す
+    for (int n = 0; n < count; n++) { // 大サイズの場合、中サイズ2体を出す
         NewEnemy* newEnemy = new NewEnemy((Size) size, 8);
         Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
         newEnemy->SetPos(enemy->GetPos());
