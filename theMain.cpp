@@ -104,7 +104,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ImGui_ImplDXlib_NewFrame();
 			ImGui::NewFrame();
 
-			auto& enemy = objManager.GetObjects<NewEnemy>();
+			auto& enemy = objManager.GetGameObjects<NewEnemy>();
 			ImGui::Begin("Debug Window");
 			ImGui::Text("DeltaTime: %.3f", gDeltaTime);
 			ImGui::Text(u8"すべてのオブジェクトの数：%d", objManager.GetAllObjectSize());

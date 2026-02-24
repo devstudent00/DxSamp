@@ -105,8 +105,8 @@ void Stage::Update() {
     if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
 
     // Update enemies
-    auto& enemies_ = objManager.GetObjects<NewEnemy>();
-    auto& bullets_ = objManager.GetObjects<Bullet>();
+    auto& enemies_ = objManager.GetGameObjects<NewEnemy>();
+    auto& bullets_ = objManager.GetGameObjects<Bullet>();
     for (int n = 0; n < enemies_.size(); n++) {
         NewEnemy* enemy = enemies_.at(n);
 		if (enemy == nullptr) continue;
@@ -136,7 +136,7 @@ void Stage::Update() {
 		}
     }
 
-    auto& bullets__ = objManager.GetObjects<Bullet>();
+    auto& bullets__ = objManager.GetGameObjects<Bullet>();
     for (int n = 0; n < bullets__.size(); n++) {
         Bullet* bullet = bullets__.at(n);
         if (!bullet->IsAlive()) {
