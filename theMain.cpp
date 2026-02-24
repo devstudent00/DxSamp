@@ -5,6 +5,7 @@
 #include "Stage.h"
 #include "ImGui/imgui_impl_dxlib.hpp"
 #include "ObjectManager.h"
+#include "Player.h"
 
 namespace
 {
@@ -105,10 +106,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ImGui::NewFrame();
 
 			auto& enemy = objManager.GetGameObjects<NewEnemy>();
+			auto player = objManager.GetGameObject<Player>();
 			ImGui::Begin("Debug Window");
 			ImGui::Text("DeltaTime: %.3f", gDeltaTime);
 			ImGui::Text(u8"すべてのオブジェクトの数：%d", objManager.GetAllObjectSize());
 			ImGui::Text(u8"敵の数：%d", enemy.size());
+			ImGui::Text(u8"敵とプレイヤー当たってる?: %d", player->isHit);
 			if (ImGui::Button(u8"敵をスポーン")) stage->SpawnEnemy();			
 			
 			ImGui::End();

@@ -5,6 +5,8 @@ class Player :
     public Base
 {
 public:
+	bool isHit;
+
 	//コンストラクタ
 	Player();
 	Player(const Vector2D& pos, const Vector2D& vel, unsigned int color,
