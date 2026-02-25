@@ -105,54 +105,7 @@ void Stage::Update() {
     if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
     if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
 
-
-    // Update enemies
-    auto& enemies_ = objManager.GetGameObjects<NewEnemy>();
-    auto& bullets_ = objManager.GetGameObjects<Bullet>();
-    for (int n = 0; n < enemies_.size(); n++) {
-        NewEnemy* enemy = enemies_.at(n);
-		if (enemy == nullptr) continue;
-        if (!enemy->IsAlive()) continue;
-        enemy->Update();
-
-        auto& pPos = player_->GetPos();
-        auto& ePos = enemy->GetPos();
-		// プレイヤーと敵の当たり判定
-		float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
-		if (distance < player_->GetRadius() + enemy->Radius()) {
-			player_->isHit = true;
-		}
-        else {
-			player_->isHit = false;
-        }
-        
-		// 弾と敵の当たり判定
-		for (Bullet* b : bullets_) {            
-			float distance = Math2D::Length(Math2D::Sub(b->GetPos(), enemy->GetPos())); //弾と敵の距離
-            Vector2D enemyPos = enemy->GetPos();
-            Size enemySize = enemy->GetSize();
-            
-			if (distance < b->Radius() + enemy->Radius()) {
-                int num = GetRand(3) + 2;
-                int sc[3] = { 20, 50, 100 };
-                score_ += sc[enemy->GetSize()];
-
-                if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
-                    objManager.AddObject(new ExplosionEffect(enemyPos));
-                    //RemoveEnemy(enemy);
-                    objManager.RemoveObject(enemy);
-                }
-                else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
-                    RandomSpawnEnemy(enemy, num, Size::SMALL);                 
-                }
-                else if (enemySize == Size::LARGE) { //
-                    RandomSpawnEnemy(enemy, num, Size::MEDIUM);
-                }
-				b->Dead();           // 弾を消す
-			}
-		}
-    }
-
+	Enemy_vs_Bullet(); //敵と弾の当たり判定
     auto& bullets__ = objManager.GetGameObjects<Bullet>();
     for (int n = 0; n < bullets__.size(); n++) {
         Bullet* bullet = bullets__.at(n);
@@ -218,6 +171,56 @@ void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
     }
     objManager.RemoveObject(enemy);
     //RemoveEnemy(enemy);
+}
+
+void Stage::Enemy_vs_Bullet() {
+    // Update enemies
+    auto& enemies_ = objManager.GetGameObjects<NewEnemy>();
+    auto& bullets_ = objManager.GetGameObjects<Bullet>();
+    for (int n = 0; n < enemies_.size(); n++) {
+        NewEnemy* enemy = enemies_.at(n);
+        if (enemy == nullptr) continue;
+        if (!enemy->IsAlive()) continue;
+        enemy->Update();
+
+        auto& pPos = player_->GetPos();
+        auto& ePos = enemy->GetPos();
+        // プレイヤーと敵の当たり判定
+        float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
+        if (distance < player_->GetRadius() + enemy->Radius()) {
+            player_->isHit = true;
+        }
+        else {
+            player_->isHit = false;
+        }
+
+        // 弾と敵の当たり判定
+        for (Bullet* b : bullets_) {
+            float distance = Math2D::Length(Math2D::Sub(b->GetPos(), enemy->GetPos())); //弾と敵の距離
+            Vector2D enemyPos = enemy->GetPos();
+            Size enemySize = enemy->GetSize();
+
+            if (distance < b->Radius() + enemy->Radius()) {
+                int num = GetRand(3) + 2;
+                int sc[3] = { 20, 50, 100 };
+                score_ += sc[enemy->GetSize()];
+
+                if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
+                    objManager.AddObject(new ExplosionEffect(enemyPos));
+                    //RemoveEnemy(enemy);
+                    objManager.RemoveObject(enemy);
+                }
+                else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
+                    RandomSpawnEnemy(enemy, num, Size::SMALL);
+                }
+                else if (enemySize == Size::LARGE) { //
+                    RandomSpawnEnemy(enemy, num, Size::MEDIUM);
+                }
+                b->Dead();           // 弾を消す
+            }
+        }
+    }
+
 }
 
 void Stage::Draw() {   
