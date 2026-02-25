@@ -37,6 +37,7 @@ private:
 
 private:
     Player* player_;
+    long long score_;
     ///std::vector<Bullet *> bullets_;
     //std::vector<NewEnemy*> enemies_;
 };

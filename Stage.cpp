@@ -77,6 +77,7 @@ Stage::Stage()
 
 void Stage::Initialize() {
     Release();
+    score_ = 0;
     player_ = new Player(
 		START_POS, START_VEL, COLOR, START_DIR, RADIUS, OMEGA
 	);
@@ -120,6 +121,9 @@ void Stage::Update() {
             Size enemySize = enemy->GetSize();
             
 			if (distance < b->Radius() + enemy->Radius()) {
+                int sc[3] = { 20, 50, 100 };
+                score_ += sc[enemy->GetSize()];
+
                 if (enemySize == Size::SMALL) { //小サイズの場合、弾が当たったら消える               
                     objManager.AddObject(new ExplosionEffect(enemyPos));
                     //RemoveEnemy(enemy);
@@ -205,6 +209,8 @@ void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
 
 void Stage::Draw() {   
     objManager.DrawObject();
+
+    DrawFormatString(0, 0, GetColor(255, 255, 255), "スコア：%d", score_);
 }
 
 void Stage::Release() {
