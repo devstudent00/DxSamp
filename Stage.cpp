@@ -113,6 +113,19 @@ void Stage::Update() {
             objManager.RemoveObject(bullet);
         }
     }
+
+	player_->isHit = false;
+	for (auto& enemyis : objManager.GetGameObjects<NewEnemy>()) {
+		if (enemyis == nullptr) continue;
+		if (!enemyis->IsAlive()) continue;
+
+		// プレイヤーと敵の当たり判定
+		float distance = Math2D::Length(Math2D::Sub(player_->GetPos(), enemyis->GetPos())); //プレイヤーと敵の距離
+		if (distance < player_->GetRadius() + enemyis->Radius()) {
+			player_->isHit = true;
+            break;
+		}
+	}
     
     // 寿命で削除
     //bullets_.erase(
@@ -186,13 +199,13 @@ void Stage::Enemy_vs_Bullet() {
         auto& pPos = player_->GetPos();
         auto& ePos = enemy->GetPos();
         // プレイヤーと敵の当たり判定
-        float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
-        if (distance < player_->GetRadius() + enemy->Radius()) {
-            player_->isHit = true;
-        }
-        else {
-            player_->isHit = false;
-        }
+        //float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
+        //if (distance < player_->GetRadius() + enemy->Radius()) {
+        //    player_->isHit = true;
+        //}
+        //else {
+        //    player_->isHit = false;
+        //}
 
         // 弾と敵の当たり判定
         for (Bullet* b : bullets_) {
