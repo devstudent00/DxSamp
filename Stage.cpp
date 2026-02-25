@@ -24,6 +24,7 @@ namespace {
     constexpr float RADIUS = 20.0f; // 形状
     constexpr float OMEGA = 2.0f; // 回転速度（rad/sec）
 	const unsigned int COLOR = GetColor(255, 0, 0); // 赤
+    const float PLAYER_COLLSTION_RADI = 15.0f;
 }
 
 namespace BulletParams {
@@ -78,9 +79,12 @@ Stage::Stage()
 void Stage::Initialize() {
     Release();
     score_ = 0;
+
+    //変数playerだと、消えるので、newする
     player_ = new Player(
 		START_POS, START_VEL, COLOR, START_DIR, RADIUS, OMEGA
 	);
+    player_->SetCollstionRadius(PLAYER_COLLSTION_RADI);
     objManager.AddObject(player_);
 
     for (int i = 0; i < EnemyParams::ENEMY_MAX; ++i) {
@@ -183,16 +187,7 @@ void Stage::Enemy_vs_Bullet() {
         if (!enemy->IsAlive()) continue;
         enemy->Update();
 
-        auto& pPos = player_->GetPos();
-        auto& ePos = enemy->GetPos();
-        // プレイヤーと敵の当たり判定
-        float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
-        if (distance < player_->GetRadius() + enemy->Radius()) {
-            player_->isHit = true;
-        }
-        else {
-            player_->isHit = false;
-        }
+        Player_vs_Enemy();
 
         // 弾と敵の当たり判定
         for (Bullet* b : bullets_) {
@@ -221,6 +216,23 @@ void Stage::Enemy_vs_Bullet() {
         }
     }
 
+}
+
+void Stage::Player_vs_Enemy() {
+	auto& enemies_ = objManager.GetGameObjects<NewEnemy>();
+    player_->isHit = false; 
+    for (auto& enemy : enemies_) {
+		auto& pPos = player_->GetPos();
+		auto& ePos = enemy->GetPos();
+		// プレイヤーと敵の当たり判定
+		float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
+		if (distance < player_->GetRadius() + enemy->Radius()) {
+            player_->isHit = true;
+            player_->isAlive_ = false;
+
+            break;
+		}
+    }
 }
 
 void Stage::Draw() {   

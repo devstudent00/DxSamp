@@ -6,6 +6,8 @@ class Player :
 {
 public:
 	bool isHit;
+	int collisionRadius_;
+	int coolTime_; 
 
 	//コンストラクタ
 	Player();
@@ -25,6 +27,8 @@ public://セッターゲッターは全部インラインで書いたよ
 	float GetOmega() { return omega_; }
 	void SetAngle(float angle) { angle_ = angle; }
 	float GetAngle() { return angle_; }
+	void SetCollstionRadius(float r) { collisionRadius_ = r; }
+	float GetCollstionRadius() { return collisionRadius_; }
 private:
 	//独自のメンバ
 	//自分の向き（ベクトル）

@@ -39,6 +39,7 @@ private:
     Player* player_;
     long long score_;
 	void Enemy_vs_Bullet();
+    void Player_vs_Enemy(); // ƒvƒŒƒCƒ„[‚Æ“G‚Ì“–‚½‚è”»’è
     ///std::vector<Bullet *> bullets_;
     //std::vector<NewEnemy*> enemies_;
 };
