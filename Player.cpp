@@ -155,7 +155,4 @@ void Player::Draw()
 
 	DrawFormatString(50, 50, GetColor(255, 255, 255), "RotAngle:%lf", angle_);
 	DrawFormatString(50, 80, GetColor(255, 255, 255), "Velocity:(%lf, %lf)", vel_.x, vel_.y);
-
-	DrawCircleAA(pos_.x, pos_.y, radius_, 32, GetColor(0, 255, 0), FALSE);
-
 }

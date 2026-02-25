@@ -133,6 +133,7 @@ void Stage::Update() {
             Size enemySize = enemy->GetSize();
             
 			if (distance < b->Radius() + enemy->Radius()) {
+                int num = GetRand(3) + 2;
                 int sc[3] = { 20, 50, 100 };
                 score_ += sc[enemy->GetSize()];
 
