@@ -19,6 +19,7 @@ ExplosionEffect::ExplosionEffect(Vector2D pos, int particleCount)
 	particles_.clear();
 	particles_.resize(particleCount);
 	isFinished_ = false;
+	CharColor_ = GetColor(GetRand(255) + 1, 255, 255);
 	Particle particle;
 	particle.offset_ = PARTICLE_OFFSET;
 	particle.velocity = PARTICLE_VELCITY;
@@ -76,17 +77,27 @@ void ExplosionEffect::Update()
 
 void ExplosionEffect::Draw() {
 	if (isFinished_) return;
+	int color[3];
+	GetColor2(CharColor_, &color[0], &color[1], &color[2]); 
 
 	for (auto& particle : particles_) {
 		if (particle.life > 0.0f) {
 			Vector2D drawPos = Math2D::Add(GetPos(), particle.offset_);
 			Vector2D screenPos = Math2D::World2Screen(drawPos);
 			//DrawCircle((int) screenPos.x, (int) screenPos.y, particle.radius, GetColor(255, 0, 0));
+			//unsigned int particleColor = GetColor(
+			//	(int)(255 * particle.alpha),
+			//	(int)(255 * particle.alpha),
+			//	(int)(255 * particle.alpha)
+			//);
+
 			unsigned int particleColor = GetColor(
-				(int)(255 * particle.alpha),
-				(int)(255 * particle.alpha),
-				(int)(255 * particle.alpha)
+				(int)(color[0] * particle.alpha),
+				(int)(color[1] * particle.alpha),
+				(int)(color[2] * particle.alpha)
 			);
+
+
 			
 			DrawCircleAA((int)screenPos.x, (int)screenPos.y, particle.radius, 60, 
 				particleColor);

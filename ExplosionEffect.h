@@ -10,6 +10,8 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	
+
 	bool IsFinished() const { return isFinished_; }
 
 	struct Particle {
@@ -22,6 +24,6 @@ public:
 private:
 	bool isFinished_; //エフェクト終了フラグ
 	std::vector<Particle> particles_;  //パーティクル
-	
+	unsigned int CharColor_;
 };
 
