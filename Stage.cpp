@@ -105,6 +105,7 @@ void Stage::Update() {
     if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
     if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
 
+
     // Update enemies
     auto& enemies_ = objManager.GetGameObjects<NewEnemy>();
     auto& bullets_ = objManager.GetGameObjects<Bullet>();
@@ -113,6 +114,17 @@ void Stage::Update() {
 		if (enemy == nullptr) continue;
         if (!enemy->IsAlive()) continue;
         enemy->Update();
+
+        auto& pPos = player_->GetPos();
+        auto& ePos = enemy->GetPos();
+		// プレイヤーと敵の当たり判定
+		float distance = Math2D::Length(Math2D::Sub(pPos, ePos)); //プレイヤーと敵の距離
+		if (distance < player_->GetRadius() + enemy->Radius()) {
+			player_->isHit = true;
+		}
+        else {
+			player_->isHit = false;
+        }
         
 		// 弾と敵の当たり判定
 		for (Bullet* b : bullets_) {            
@@ -130,10 +142,10 @@ void Stage::Update() {
                     objManager.RemoveObject(enemy);
                 }
                 else if (enemySize == Size::MEDIUM) { //中サイズの場合、小サイズ2体を出す
-                    RandomSpawnEnemy(enemy, 2, Size::SMALL);                 
+                    RandomSpawnEnemy(enemy, num, Size::SMALL);                 
                 }
                 else if (enemySize == Size::LARGE) { //
-                    RandomSpawnEnemy(enemy, 2, Size::MEDIUM);
+                    RandomSpawnEnemy(enemy, num, Size::MEDIUM);
                 }
 				b->Dead();           // 弾を消す
 			}
@@ -196,7 +208,7 @@ void Stage::SpawnEnemy() {
 }
 
 void Stage::RandomSpawnEnemy(NewEnemy* enemy, int count, int size) {
-    for (int n = 0; n < size; n++) { // 大サイズの場合、中サイズ2体を出す
+    for (int n = 0; n < count; n++) { // 大サイズの場合、中サイズ2体を出す
         NewEnemy* newEnemy = new NewEnemy((Size) size, 8);
         Vector2D randomVel = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100) };
         newEnemy->SetPos(enemy->GetPos());
