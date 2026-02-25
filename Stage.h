@@ -36,6 +36,7 @@ public:
 private:
 
 private:
+	GameStatus gameStatus_;
     Player* player_;
     long long score_;
 	void Enemy_vs_Bullet();

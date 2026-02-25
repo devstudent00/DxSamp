@@ -16,25 +16,25 @@ namespace {
 	const float LARGE_RADIUS_MAX = 80.0f; //‘åƒTƒCƒY‚ÌÅ‘å”¼Œa
 }
 
-NewEnemy::NewEnemy(int segment)
- : Base(), segment_(segment){
-	isAlive_ = true;
-	pos_ = { (float) GetRand(WIN_WIDTH - 1), (float) GetRand(WIN_HEIGHT - 1) };
-	vel_ = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100)};
-	Color_ = GetColor(255, 255, 255);
-	if (segment_ < SEGMENT_MIN) {
-		segment_ = SEGMENT_MIN; //Å’á8•ªŠ„
-	}
-	radius_ = (float)(GetRand(50) + MIN_RADIUS); //25`75‚Ì”¼Œa
-	size_ = CheckSize();
-	vertex_.resize(segment_);
-
-	angle_ = 0.0f;
-	omega_ = (float)(GetRand(200) - 100) / 100.0f; //-1.0`1.0‚ÌŠp‘¬“x
-
-	MakeShape();
-}
-
+//NewEnemy::NewEnemy(int segment)
+// : Base(), segment_(segment){
+//	isAlive_ = true;
+//	pos_ = { (float) GetRand(WIN_WIDTH - 1), (float) GetRand(WIN_HEIGHT - 1) };
+//	vel_ = { (float)(GetRand(200) - 100), (float)(GetRand(200) - 100)};
+//	Color_ = GetColor(255, 255, 255);
+//	if (segment_ < SEGMENT_MIN) {
+//		segment_ = SEGMENT_MIN; //Å’á8•ªŠ„
+//	}
+//	radius_ = (float)(GetRand(50) + MIN_RADIUS); //25`75‚Ì”¼Œa
+//	size_ = CheckSize();
+//	vertex_.resize(segment_);
+//
+//	angle_ = 0.0f;
+//	omega_ = (float)(GetRand(200) - 100) / 100.0f; //-1.0`1.0‚ÌŠp‘¬“x
+//
+//	MakeShape();
+//}
+//
 NewEnemy::NewEnemy(Size size, int segment)
 	: Base(), segment_(segment), size_(size) {
 	isAlive_ = true;
@@ -52,19 +52,19 @@ NewEnemy::NewEnemy(Size size, int segment)
 	MakeShape();
 }
 
-NewEnemy::NewEnemy(const Vector2D& pos, const Vector2D& vel, Size size, int segment)
- : Base(pos, vel, GetColor(255, 255, 255)), segment_(segment),  size_(size) {
-	isAlive_ = true;
-	if (segment_ < SEGMENT_MIN) {
-		segment_ = SEGMENT_MIN; //Å’á8•ªŠ„
-	}
-	radius_ = (int)RandomRadius(size_); //ƒTƒCƒY‚É‰‚¶‚½”¼Œa
-	vertex_.resize(segment_); //”z—ñ‚ÌƒTƒCƒY‚ğ•ÏX‚·‚é
-	angle_ = 0.0f;
-	omega_ = (float)(GetRand(200) - 100) / 100.0f; //-1.0`1.0‚ÌŠp‘¬“x
-
-	MakeShape();
-}
+//NewEnemy::NewEnemy(const Vector2D& pos, const Vector2D& vel, Size size, int segment)
+// : Base(pos, vel, GetColor(255, 255, 255)), segment_(segment),  size_(size) {
+//	isAlive_ = true;
+//	if (segment_ < SEGMENT_MIN) {
+//		segment_ = SEGMENT_MIN; //Å’á8•ªŠ„
+//	}
+//	radius_ = (int)RandomRadius(size_); //ƒTƒCƒY‚É‰‚¶‚½”¼Œa
+//	vertex_.resize(segment_); //”z—ñ‚ÌƒTƒCƒY‚ğ•ÏX‚·‚é
+//	angle_ = 0.0f;
+//	omega_ = (float)(GetRand(200) - 100) / 100.0f; //-1.0`1.0‚ÌŠp‘¬“x
+//
+//	MakeShape();
+//}
 
 void NewEnemy::Update()
 {

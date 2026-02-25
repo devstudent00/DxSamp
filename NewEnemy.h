@@ -17,9 +17,9 @@ private:
 	std::vector<Vector2D> vertex_;
 	Size size_;
 public:
-	NewEnemy(int segment);
+	//NewEnemy(int segment);
 	NewEnemy(Size size, int segment);
-	NewEnemy(const Vector2D& pos, const Vector2D& vel, Size size, int segment);
+	//NewEnemy(const Vector2D& pos, const Vector2D& vel, Size size, int segment);
 
 	void Update() override;
 	void Draw() override;

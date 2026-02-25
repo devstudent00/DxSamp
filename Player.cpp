@@ -38,6 +38,7 @@ Player::Player(const Vector2D& pos, const Vector2D& vel, unsigned int color,
 	           const Vector2D& dir, float r, float omega)
 	:Base(pos,vel,color), dir_(dir), radius_(r), omega_(omega)
 {
+	spawnCooldown = 120;
 	vertex_[0] = { 0, 0 }; //‚O‚Å‰Šú‰»
 	vertex_[1] = { 0, 0 }; //‚O‚Å‰Šú‰»
 	vertex_[2] = { 0, 0 }; //‚O‚Å‰Šú‰»
@@ -50,6 +51,9 @@ Player::~Player()
 
 void Player::Update()
 {
+
+	
+
 	const float dt = GetDeltaTime();
 	//Œ´“_‚É‚ ‚é”¼Œa1‚Ì“àÚ‚·‚é‚RŠpŒ`‚ğl‚¦‚é
 	Vector2D p[3];

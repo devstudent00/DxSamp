@@ -69,6 +69,7 @@ public:
 		for (Base* obj : baseVector) {
 			if (obj == nullptr) continue;
 			C* instance = dynamic_cast<C*>(obj);
+			if (instance == nullptr) continue;
 
 			if (instance != nullptr) {
 				base.push_back(instance);

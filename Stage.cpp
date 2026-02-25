@@ -77,6 +77,7 @@ Stage::Stage()
 
 void Stage::Initialize() {
     Release();
+    gameStatus_ = GameStatus::TITLE;
     score_ = 0;
     player_ = new Player(
 		START_POS, START_VEL, COLOR, START_DIR, RADIUS, OMEGA
@@ -95,36 +96,58 @@ Stage::~Stage() {
 }
 
 void Stage::Update() {
+	if (gameStatus_ == GameStatus::TITLE) {
+		if (Input::IsKeyDown(KEY_INPUT_RETURN)) {
+			gameStatus_ = GameStatus::PLAYING;
+		}
+		return;
+	}
+    else if (gameStatus_ == GameStatus::PLAYING) {
+        if (player_->spawnCooldown > 0) {
+            player_->spawnCooldown--;
+        }
+        else {
+            if (player_->isHit) {
+				gameStatus_ = GameStatus::GAMEOVER;
+            }
+        }
 
-    //各オブジェクトのアップデート処理
-    //for (auto& effect : effects) effect->Update(); // エフェクト
-    //for (auto& bullet : bullets_) bullet->Update(); //弾
-    objManager.UpdateObject();
+        //各オブジェクトのアップデート処理
+//for (auto& effect : effects) effect->Update(); // エフェクト
+//for (auto& bullet : bullets_) bullet->Update(); //弾
+        objManager.UpdateObject();
 
-    // キーによる処理
-    if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
-    if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
+        // キーによる処理
+        if (Input::IsKeyDown(KEY_INPUT_Z)) SpawnBullet(); //Zキーで、弾を発射する
+        if (Input::IsKeyDown(KEY_INPUT_E)) SpawnEnemy(); //Eキーで、敵を出す 
 
-	Enemy_vs_Bullet(); //敵と弾の当たり判定
-    auto& bullets__ = objManager.GetGameObjects<Bullet>();
-    for (int n = 0; n < bullets__.size(); n++) {
-        Bullet* bullet = bullets__.at(n);
-        if (!bullet->IsAlive()) {
-            objManager.RemoveObject(bullet);
+        Enemy_vs_Bullet(); //敵と弾の当たり判定
+        auto& bullets__ = objManager.GetGameObjects<Bullet>();
+        for (int n = 0; n < bullets__.size(); n++) {
+            Bullet* bullet = bullets__.at(n);
+            if (!bullet->IsAlive()) {
+                objManager.RemoveObject(bullet);
+            }
+        }
+
+        player_->isHit = false;
+        for (auto& enemyis : objManager.GetGameObjects<NewEnemy>()) {
+            if (enemyis == nullptr) continue;
+            if (!enemyis->IsAlive()) continue;
+
+            // プレイヤーと敵の当たり判定
+            float distance = Math2D::Length(Math2D::Sub(player_->GetPos(), enemyis->GetPos())); //プレイヤーと敵の距離
+            if (distance < player_->GetRadius() + enemyis->Radius()) {
+                player_->isHit = true;
+                break;
+            }
         }
     }
-
-	player_->isHit = false;
-	for (auto& enemyis : objManager.GetGameObjects<NewEnemy>()) {
-		if (enemyis == nullptr) continue;
-		if (!enemyis->IsAlive()) continue;
-
-		// プレイヤーと敵の当たり判定
-		float distance = Math2D::Length(Math2D::Sub(player_->GetPos(), enemyis->GetPos())); //プレイヤーと敵の距離
-		if (distance < player_->GetRadius() + enemyis->Radius()) {
-			player_->isHit = true;
-            break;
+	else if (gameStatus_ == GameStatus::GAMEOVER) {
+		if (Input::IsKeyDown(KEY_INPUT_RETURN)) {
+			Initialize();
 		}
+		return;
 	}
     
     // 寿命で削除
@@ -237,9 +260,21 @@ void Stage::Enemy_vs_Bullet() {
 }
 
 void Stage::Draw() {   
-    objManager.DrawObject();
+    if (gameStatus_ == GameStatus::TITLE) {
+		DrawFormatString(WIN_WIDTH / 2 - 100, WIN_HEIGHT / 2 - 20, GetColor(255, 255, 255), "エンターキーを押してください");
+		return;
+    }
+	else if (gameStatus_ == GameStatus::PLAYING) {
+		objManager.DrawObject();
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "スコア：%d", score_);
+	}
+	else if (gameStatus_ == GameStatus::GAMEOVER) {
+		DrawFormatString(WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2 - 20, GetColor(255, 255, 255), "ゲームオーバー");
+		DrawFormatString(WIN_WIDTH / 2 - 100, WIN_HEIGHT / 2 + 20, GetColor(255, 255, 255), "エンターキーを押してリスタート");
+		return;
+	}
 
-    DrawFormatString(0, 0, GetColor(255, 255, 255), "スコア：%d", score_);
+    
 }
 
 void Stage::Release() {

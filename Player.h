@@ -6,6 +6,7 @@ class Player :
 {
 public:
 	bool isHit;
+	int spawnCooldown; //スポーン無敵時間
 
 	//コンストラクタ
 	Player();
